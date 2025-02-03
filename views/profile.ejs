@@ -4,6 +4,14 @@
     <div class="profile-card">
         <h2 class="text-center">Perfil del Usuario</h2>
         <div class="user-info">
+            <!--depende del usuario pone un rol o otro-->
+            <%if(user.role=='0'){%>
+            <p><strong>ROL:</strong><span id="user-rol"> Estudiante</span></p>
+            <%}else if(user.role=='1'){%>
+            <p><strong>ROL:</strong><span id="user-rol"> Profesor</span></p>
+            <%}else if(user.role=='2'){%>
+            <p><strong>ROL:</strong><span id="user-rol"> Administrador</span></p>
+            <%}%>
             <p><strong>Nombre:</strong> <span id="user-name"><%=user.name%></span></p>
             <p><strong>Apellido:</strong> <span id="user-lastname"><%=user.lastName%></span></p>
             <p><strong>Email:</strong> <span id="user-email"><%=user.email%></span></p>
