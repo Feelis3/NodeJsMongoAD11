@@ -1,0 +1,102 @@
+<%- include('partials/_header') %>
+
+<div class="container">
+    <div class="profile-card">
+        <h2 class="text-center">Perfil del Usuario</h2>
+        <div class="user-info">
+            <p><strong>Nombre:</strong> <span id="user-name"><%=user.name%></span></p>
+            <p><strong>Apellido:</strong> <span id="user-lastname"><%=user.lastName%></span></p>
+            <p><strong>Email:</strong> <span id="user-email"><%=user.email%></span></p>
+            <p><strong>Edad:</strong> <span id="user-age"><%=user.age%></span> años</p>
+        </div>
+        <hr class="my-4">
+        <div class="asignaturas">
+            <h4 class="text-center mb-3">Asignaturas</h4>
+            <div class="asignatura bg-primary text-white">Matemáticas - Curso 1</div>
+            <div class="asignatura bg-success text-white">Historia - Curso 2</div>
+            <div class="asignatura bg-warning text-dark">Ciencias - Curso 3</div>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos personalizados -->
+<style>
+    /* Reset de márgenes y paddings */
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    .container {
+
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Ocupa toda la altura de la ventana */
+        padding: 20px; /* Espaciado opcional */
+    }
+
+    .profile-card {
+        max-width: 600px;
+        width: 100%;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-card h2 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    .profile-card p {
+        font-size: 1.1em;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    .profile-card p strong {
+        color: #333;
+    }
+
+    .profile-card hr {
+        border-top: 2px solid #eee;
+    }
+
+    .asignaturas {
+        margin-top: 20px;
+    }
+
+    .asignaturas h4 {
+        color: #333;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+
+    .asignatura {
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        text-align: center;
+        font-size: 1.1em;
+    }
+
+    .asignatura.bg-primary {
+        background-color: #007bff !important;
+    }
+
+    .asignatura.bg-success {
+        background-color: #28a745 !important;
+    }
+
+    .asignatura.bg-warning {
+        background-color: #ffc107 !important;
+    }
+</style>
+
+<%- include('partials/_footer') %>

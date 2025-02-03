@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const {isAuthenticated} = require("passport/lib/http/request");
 router.get('/', (req, res, next) => {
   res.render('index');
 });
@@ -37,6 +36,19 @@ router.post('/signup', passport.authenticate('local-signup', {
   failureFlash: true
 }));
 
+//PROFILE
+router.get('/profile',isAuthenticated ,(req, res, next) => {
+  res.render('profile');
+});
+
+router.post('/signup', passport.authenticate('local-signup', {
+  successRedirect: '/',
+  failureRedirect: '/signup',
+  failureFlash: true
+}));
+
+
+
 //Añadir usuario
 router.post('/usuarios/add', passport.authenticate('local-signup', { //Verifico registro
   successRedirect: '/usuarios', //Éxito -> página usuarios
@@ -65,4 +77,15 @@ router.get('/error', (req, res, next) => {
   res.render('error', {message: req.flash('signupMessage') || req.flash('signinMessage')});
 })
 
+function isAuthenticated(req, res, next) {
+  if(req.isAuthenticated()) {
+    return next();
+  }
+
+  res.redirect('/')
+}
+
 module.exports = router;
+
+
+
