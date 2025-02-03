@@ -62,7 +62,7 @@ userSchema.methods.delete = async function (id) {
 userSchema.methods.findAsignaturas = async function (id) {
   const User = mongoose.model("user", userSchema);
   return await User.findById(id)
-      .populate("asignaturas", "nombre") // Solo obtener el campo "nombre" de las asignaturas
+      .populate("asignaturas")
       .then(user => {
         if (user) {
           return user.asignaturas; // Retorna las asignaturas del usuario
