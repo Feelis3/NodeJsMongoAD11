@@ -45,7 +45,7 @@ router.post('/usuarios/add', passport.authenticate('local-signup', { //Verifico 
 }))
 
 router.get('usuarios/registrousuarios', isAuthenticated, async (req, res, next) => {
-  if (req.user.rol == "admin") { //Si el usuario es un Admin
+  if (req.user.role == "0") { //Si el usuario es un Admin
     var usuario = new Usuario(); //Para interactuar con usuarios
     //¿Añadir asignatura?
 
