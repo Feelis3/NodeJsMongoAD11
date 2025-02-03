@@ -15,8 +15,11 @@ passport.deserializeUser(async (id, done) => {
 passport.use('local-signup', new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password',
+    nameField: 'name',
+    lastNameField: 'lastName',
+    ageField: 'age',
     passReqToCallback: true
-}, async (req, email, password, done) => {
+}, async (req, email, password,name,lastName,age, done) => {
     var user = new User();
     user = await user.findEmail(email)
 
@@ -26,6 +29,9 @@ passport.use('local-signup', new LocalStrategy({
         const newUser = new User();
         newUser.email = email;
         newUser.password = newUser.encryptPassword(password);
+        newUser.name = req.body.name; // Obtener el nombre del cuerpo de la solicitud
+        newUser.age = req.body.age; // Obtener la edad del cuerpo de la solicitud
+        newUser.lastName =  req.body.lastName;
         await newUser.insert()
             .then(result => console.log(result))
             .catch(error => {
