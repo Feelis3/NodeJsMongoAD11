@@ -57,12 +57,15 @@
       <!-- Botón de inicio de sesión -->
       <button type="submit" class="btn btn-login">Iniciar Sesión</button>
     </form>
+    <%if (signinMessage) {%>
+      <p style="color:#FF0000;"><%= signinMessage %></p>
+    <% } %>
     <!-- Enlace para registrarse -->
     <div class="mt-3 text-center">
-      <p>¿No tienes una cuenta? <a href="#">Regístrate</a></p>
+      <p>¿No tienes una cuenta? <a href="signup">Regístrate</a></p>
     </div>
   </div>
-
+  
   <!-- Bootstrap JS (opcional, solo si necesitas funcionalidades JS de Bootstrap) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

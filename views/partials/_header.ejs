@@ -16,9 +16,8 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <%if (user) {%>
+        <%if (user.role == '0' || user.role == '1') {%>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="#">Inicio</a>
             </li>
@@ -26,14 +25,34 @@
               <a class="nav-link" href="#">Perfil</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Asignaturas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/logout">Cerrar sesion</a>
             </li>
-            
           </ul>
-        <% }else{ %>
+        <% } else if (user.role == '2'){%>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Perfil</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Usuarios</a> <!--De aquí crea, elimina, modifica y asigna roles a usuarios-->
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Profesores</a> <!--Aquí ve una lista de profesores, los puede asignar a asignaturas-->
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Alumnos</a> <!--Aquí ve una lista de alumnos, los puede asinar a asignaturas-->
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">Cerrar sesion</a>
+              </li>
+            </ul>
+         <% } else{ %>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           
             <li class="nav-item">

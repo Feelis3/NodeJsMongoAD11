@@ -11,9 +11,13 @@ const { Schema } = mongoose;
 
 */
 
+//Atributos usuarios
 const userSchema = new Schema({
   email:  { type: String, required: true },
   password:  { type: String, required: true },
+  name: { type: String, required: true },
+  lastName: { type: String, required: true },
+  age: { type: Number, required: true },
   role: {type: Number, required: true, default: 0}
 });
 
@@ -39,8 +43,6 @@ userSchema.methods.findEmail= async (email) => {
   .catch(error => console.log(error));
 
 };
-
-
 
 //Insertar usuario
 userSchema.methods.insert= async function () {

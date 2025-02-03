@@ -13,10 +13,18 @@ router.get('/signin', (req, res, next) => {
 
 router.post('/signin', passport.authenticate('local-signin', {
   successRedirect: '/',
-  failureRedirect: '/error',
+  failureRedirect: '/signin',
   failureFlash: true
 }));
 
+
+//CERRAR SESION
+router.get('/logout', (req, res, next) => {
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+});
 
 //REGISTRARSE
 router.get('/signup', (req, res, next) => {
@@ -25,7 +33,7 @@ router.get('/signup', (req, res, next) => {
 
 router.post('/signup', passport.authenticate('local-signup', {
   successRedirect: '/',
-  failureRedirect: '/error',
+  failureRedirect: '/signup',
   failureFlash: true
 }));
 
@@ -37,7 +45,7 @@ router.post('/usuarios/add', passport.authenticate('local-signup', { //Verifico 
 }))
 
 router.get('usuarios/registrousuarios', isAuthenticated, async (req, res, next) => {
-  if (req.user.rol == "admin") { //Si el usuario es un Admin
+  if (req.user.role == "0") { //Si el usuario es un Admin
     var usuario = new Usuario(); //Para interactuar con usuarios
     //¿Añadir asignatura?
 
