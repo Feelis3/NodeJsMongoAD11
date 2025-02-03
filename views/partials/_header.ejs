@@ -20,22 +20,23 @@
         <%if (user.role == '0' || user.role == '1') {%>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              <a class="nav-link active" aria-current="page" href="/">Inicio</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/profile">Perfil</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="/asignaturas">Asignaturas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/logout">Cerrar sesion</a>
             </li>
           </ul>
-        <% } else if (user.role === '2'){%>
+        <% } else if (user.role == '2'){%>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+                <a class="nav-link active" aria-current="page" href="/">Inicio</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/profile">Perfil</a>
@@ -57,7 +58,7 @@
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              <a class="nav-link active" aria-current="page" href="/">Inicio</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="signin">Iniciar sesion</a>

@@ -1,0 +1,10 @@
+<%- include('partials/_header') %>
+
+<h1>Asignaturas</h1>
+<ul>
+    <% tasks.forEach(function(asignatura) { %>
+        <li><%= asignatura.nombre %></li>
+    <% }) %>
+</ul>
+
+<%- include('partials/_footer') %>

@@ -2,9 +2,12 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const User = require('../models/user');
+
 router.get('/', (req, res, next) => {
   res.render('index');
 });
+
 
 router.get('/signin', (req, res, next) => {
   res.render('signin'); // Asegúrate de que la vista signin.ejs exista
