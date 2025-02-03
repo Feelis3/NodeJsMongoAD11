@@ -18,6 +18,14 @@ router.post('/signin', passport.authenticate('local-signin', {
 }));
 
 
+//CERRAR SESION
+router.get('/logout', (req, res, next) => {
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  }); 
+});
+
 //REGISTRARSE
 router.get('/signup', (req, res, next) => {
   res.render('signup');
