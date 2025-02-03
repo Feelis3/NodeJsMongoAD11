@@ -34,10 +34,10 @@ passport.use('local-signup', new LocalStrategy({
         newUser.lastName =  req.body.lastName;
         await newUser.insert()
             .then(result => console.log(result))
-            .catch(error => {
-              console.log(error)
-              return done(null, false, req.flash('signupMessage', 'Error creating user. Please try again.'));
-            });
+            .catch(error => console.log(error));
+        console.log(newUser);
+        return done(null, newUser);
+
     }
 }));
 
