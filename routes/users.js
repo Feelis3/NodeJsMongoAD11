@@ -26,6 +26,11 @@ router.post('/signup', passport.authenticate('local-signup', {
   successRedirect: '/',
   failureRedirect: '/error',
   failureFlash: true
-})); 
+}));
+
+//RUTA MANEJAR ERRORES (error.ejs)
+router.get('/error', (req, res, next) => {
+  res.render('error', {message: req.flash('signupMessage') || req.flash('signinMessage')});
+})
 
 module.exports = router;
