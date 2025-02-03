@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const User = require('../models/user');
+const Usuario = require("../models/user");
 
 router.get('/', (req, res, next) => {
   res.render('index');
@@ -40,8 +41,12 @@ router.post('/signup', passport.authenticate('local-signup', {
 }));
 
 //PROFILE
-router.get('/profile',isAuthenticated ,(req, res, next) => {
-  res.render('profile');
+router.get('/profile',isAuthenticated , async (req, res, next) => {
+  const user = new Usuario();
+  const tasks = await user.findAsignaturas(req.user._id);
+  res.render('profile', {
+    tasks
+  });
 });
 
 router.post('/signup', passport.authenticate('local-signup', {
