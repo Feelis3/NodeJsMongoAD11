@@ -41,6 +41,8 @@ userSchema.methods.findEmail= async (email) => {
 };
 
 
+
+
 userSchema.methods.insert= async function () {
   //await this.save();
   await this.save()
