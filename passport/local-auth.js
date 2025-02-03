@@ -19,7 +19,7 @@ passport.use('local-signup', new LocalStrategy({
     lastNameField: 'lastName',
     ageField: 'age',
     passReqToCallback: true
-}, async (req, email, password,name,lastName,age, done) => {
+}, async (req, email, password,done) => {
     var user = new User();
     user = await user.findEmail(email)
 
