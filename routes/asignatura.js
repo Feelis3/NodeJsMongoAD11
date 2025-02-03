@@ -3,9 +3,9 @@ const router = express.Router();
 const Usuario = require('../models/user');
 
 
-router.get('/asignaturas', async (req, res) => {
+router.get('/asignaturas',isAuthenticated, async (req, res) => {
     const user = new Usuario();
-    const tasks = await user.findAsignaturas('67a13e07b29d7fed752428a9');
+    const tasks = await user.findAsignaturas(req.user._id);
     res.render('asignaturas', {
         tasks
     });
