@@ -43,7 +43,27 @@
 <body>
   <div class="login-container">
     <h2>Registrarse</h2>
-    <form method="POST"  action="/signup"> 
+    <form method="POST"  action="/signup">
+      <!-- Campo del Nombre -->
+      <div class="mb-3">
+        <label for="name" class="form-label">Nombre</label>
+        <input type="name" class="form-control" id="name" name="name" placeholder="Ingresa tu nombre" required>
+      </div>
+      <!-- Campo del Apellido -->
+      <div class="mb-3">
+        <label for="lastName" class="form-label">Apellidos</label>
+        <input type="lastName" class="form-control" id="lastName" name="lastName" placeholder="Ingresa tu apellido" required>
+      </div>
+      <!-- Campo del Edad -->
+      <div class="mb-3">
+        <label for="age" class="form-label">Edad</label>
+        <input type="age" class="form-control" id="age" name="age" placeholder="Ingresa tu edad" required>
+      </div>
+      <!-- Campo del Rol -->
+      <div class="mb-3">
+        <label for="role" class="form-label">Rol</label>
+        <input type="role" class="form-control" id="role" name="role" placeholder="Ingresa tu rol" required>
+      </div>
       <!-- Campo de correo electrónico -->
       <div class="mb-3">
         <label for="email" class="form-label">Correo electrónico</label>
