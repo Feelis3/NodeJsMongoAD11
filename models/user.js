@@ -42,11 +42,20 @@ userSchema.methods.findEmail= async (email) => {
 
 
 
-
+//Insertar usuario
 userSchema.methods.insert= async function () {
   //await this.save();
   await this.save()
   .then(result => console.log(result))
   .catch(error => console.log(error));
 };
+
+//Eliminar usuario
+userSchema.methods.delete= async function (id) {
+  const User = mongoose.model("user", userSchema);
+  await User.deleteOne({'_id': id})
+      .then(result => console.log(result))
+      .catch(error => console.log(error));
+}
+
 module.exports = mongoose.model('user', userSchema);
