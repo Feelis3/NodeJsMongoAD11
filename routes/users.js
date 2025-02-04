@@ -197,8 +197,8 @@ router.get('/usuarios', isAuthenticated, async (req, res) => {
     try {
       const usuarios = await User.find();  // Obtengo todos los usuarios
       res.render('usuarios', { usuarios }); //Renderizo la view y le paso los usuarios
-    } catch (err) {
-      console.error("Error al obtener usuarios:", err);
+    } catch (error) {
+      console.error("Error al obtener usuarios:", error);
       res.status(500).send('Error al obtener los usuarios');
     }
   } else {
@@ -208,20 +208,20 @@ router.get('/usuarios', isAuthenticated, async (req, res) => {
 
 //Página Profesores
 router.get('/profesores', isAuthenticated, async (req, res) => {
-  if (req.user.role === 2) { // Si es un Admin
+  if (req.user.role === 2) { //Si es un Admin
     try {
-      const usuarios = await User.find();  // Obtengo todos los usuarios
-      const profesores = [];  // Inicializo un array vacío
-      for (let i = 0; i < usuarios.length; i++) {  // Uso usuarios.length
-        if (usuarios[i].role === 1) {  // Accedo a los elementos del array usando el índice
-          profesores.push(usuarios[i]);  // Agrego al array de profesores
+      const usuarios = await User.find(); //Obtengo todos los usuarios
+      const profesores = []; //Array vacio
+      for (let i = 0; i < usuarios.length; i++) {
+        if (usuarios[i].role === 1) { //Si el usuario es un profesor
+          profesores.push(usuarios[i]); //Le añado a profesores
         }
       }
 
-      res.render('profesores', { profesores }); // Renderizo la view y le paso los profesores
+      res.render('profesores', { profesores }); //Renderizo la view y le paso los profesores
     } catch (error) {
-      console.error("Error al obtener usuarios:", error);
-      res.status(500).send('Error al obtener los usuarios');
+      console.error("Error al obtener profesores:", error);
+      res.status(500).send('Error al obtener los profesores');
     }
   } else {
     //res.redirect('/error');
