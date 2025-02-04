@@ -1,7 +1,10 @@
 // routes/users.js
+const User = require('../models/user');
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+
+
 router.get('/', (req, res, next) => {
   res.render('index');
 });
@@ -81,9 +84,23 @@ function isAuthenticated(req, res, next) {
   if(req.isAuthenticated()) {
     return next();
   }
-
   res.redirect('/')
 }
+
+//Página Usuarios
+router.get('/usuarios', isAuthenticated, async (req, res) => {
+  if (req.user.role === 2) { //Si es un Admin
+    try {
+      const usuarios = await User.find();  // Obtengo todos los usuarios
+      res.render('usuarios', { usuarios }); //Renderizo la view y le paso los usuarios
+    } catch (err) {
+      console.error("Error al obtener usuarios:", err);
+      res.status(500).send('Error al obtener los usuarios');
+    }
+  } else {
+    //res.redirect('/error');
+  }
+});
 
 module.exports = router;
 

@@ -1,0 +1,30 @@
+<%- include('partials/_header') %>
+
+<h1>Lista de Usuarios</h1>
+<table>
+    <tr>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+    </tr>
+    <% if (usuarios && usuarios.length > 0) { %>
+        <% usuarios.forEach(usuario => { %>
+            <tr>
+                <td><%= usuario.email %></td>
+                <td><%= usuario.role %></td>
+                <td>
+                    <a href="/usuarios/editar/<%= usuario._id %>">Editar</a>
+                    <a href="/usuarios/eliminar/<%= usuario._id %>">Eliminar</a>
+                    <a href="/usuarios/asignar/<%= usuario._id %>">Asignar Rol</a>
+                </td>
+            </tr>
+        <% }) %>
+    <% } else { %>
+        <tr><td colspan="3">No hay usuarios para mostrar</td></tr>
+    <% } %>
+
+</table>
+
+<a href="/usuarios/crear">Crear Usuario</a>
+
+<%- include('partials/_footer') %>
