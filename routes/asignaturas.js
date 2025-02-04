@@ -9,6 +9,17 @@ const Curso = require("../models/Curso");
 router.get('/asignaturas',isAuthenticated, async (req, res) => {
     const user = new Usuario();
     const tasks = await user.findAsignaturas(req.user._id);
+    //Nombre del curso
+    for (const asig of tasks){
+        const asigId = asig.curso.toHexString();
+        const cursoConNombre = await Curso.find({
+                _id: { $in: asigId} },
+            "name"
+        );
+        console.log("CURSO :..",cursoConNombre)
+        asig.curso = cursoConNombre[0];
+    }
+    //Nombre de la asignatura
     for (const asignatura of tasks) {
         console.log(asignatura.alumnos);
 

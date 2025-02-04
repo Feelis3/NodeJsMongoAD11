@@ -9,7 +9,8 @@ const Asignatura = require("../models/asignatura");
 
 const bcrypt = require('bcrypt-nodejs');
 
-const { ObjectId } = require("mongodb"); // Asegurar uso correcto de ObjectId
+const { ObjectId } = require("mongodb");
+const Curso = require("../models/Curso"); // Asegurar uso correcto de ObjectId
 
 
 
@@ -18,6 +19,16 @@ router.get('/', async (req, res, next) => {
     console.log("Usuario autenticado"); // Log para saber si entra en el if
     const user = new Usuario();
     const tasks = await user.findAsignaturas(req.user._id);
+    //Consigue el nombre del curso
+    for (const asig of tasks){
+      const asigId = asig.curso.toHexString();
+      const cursoConNombre = await Curso.find({
+            _id: { $in: asigId} },
+          "name"
+      );
+      console.log("CURSO :..",cursoConNombre)
+      asig.curso = cursoConNombre[0];
+    }
     res.render('index', { tasks });
   } else {
     console.log("Usuario no autenticado"); // Log para saber si entra en el else
