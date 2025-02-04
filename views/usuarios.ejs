@@ -1,32 +1,42 @@
 <%- include('partials/_header') %> <!--Prueba página-->
 
-<h1>Lista de Usuarios</h1>
-<table class="table">
-    <tr>
-        <th>Email</th>
-        <th>Rol</th>
-        <th>Acciones</th>
-    </tr>
-    <% if (usuarios && usuarios.length > 0) { %>
-        <% usuarios.forEach(usuario => { %>
+<div class="container mt-4">
+    <h1 class="mb-3">Lista de Usuarios</h1>
+    <table class="table table-striped table-bordered table-hover">
+
+        <thead class="table-dark">
+        <tr>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <% if (usuarios && usuarios.length > 0) { %>
+            <% usuarios.forEach(usuario => { %>
+                <tr>
+                    <td><%= usuario.email %></td>
+                    <td><%= usuario.role %></td>
+                    <td>
+                        <a href="/usuarios/editusuarios/<%= usuario._id %>" class="btn btn-warning btn-sm">Editar</a>
+                        <form action="/usuarios/delete/<%= usuario._id %>" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        <% } else { %>
             <tr>
-                <td><%= usuario.email %></td>
-                <td><%= usuario.role %></td>
-                <td>
-                    <a href="/usuarios/editusuarios/<%= usuario._id %>">Editar</a>
-                    <form action="/usuarios/delete/<%= usuario._id %>" method="POST">
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                    </form>
-
-                </td>
+                <td colspan="3" class="text-center">No hay usuarios para mostrar</td>
             </tr>
-        <% }) %>
-    <% } else { %>
-        <tr><td colspan="3">No hay usuarios para mostrar</td></tr>
-    <% } %>
+        <% } %>
+        </tbody>
 
-</table>
+    </table>
+    <a href="/usuarios/addusuarios" class="btn btn-primary">Crear Usuario</a>
+</div>
 
-<a href="/usuarios/addusuarios">Crear Usuario</a>
+
 
 <%- include('partials/_footer') %>

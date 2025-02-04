@@ -6,6 +6,9 @@ const passport = require('passport');
 const User = require('../models/user');
 const Usuario = require("../models/user");
 
+const bcrypt = require('bcrypt-nodejs');
+
+
 router.get('/', async (req, res, next) => {
   if (req.isAuthenticated()) { // Verifica si el usuario está autenticado
     console.log("Usuario autenticado"); // Log para saber si entra en el if
