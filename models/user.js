@@ -43,6 +43,7 @@ userSchema.methods.findEmail = async function (email) {
       .catch(error => console.log(error));
 };
 
+
 // Método para insertar un usuario *Esto no sirve, creo*
 userSchema.methods.insert = async function () {
   await this.save()
