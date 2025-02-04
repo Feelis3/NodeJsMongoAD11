@@ -1,0 +1,32 @@
+<%- include('partials/_header') %> <!--Prueba página-->
+
+<h1>Lista de Usuarios</h1>
+<table>
+    <tr>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+    </tr>
+    <% if (usuarios && usuarios.length > 0) { %>
+        <% usuarios.forEach(usuario => { %>
+            <tr>
+                <td><%= usuario.email %></td>
+                <td><%= usuario.role %></td>
+                <td>
+                    <a href="/usuarios/editusuarios/<%= usuario._id %>">Editar</a>
+                    <form action="/usuarios/delete/<%= usuario._id %>" method="POST">
+                        <button type="submit" class="#">Eliminar</button>
+                    </form>
+
+                </td>
+            </tr>
+        <% }) %>
+    <% } else { %>
+        <tr><td colspan="3">No hay usuarios para mostrar</td></tr>
+    <% } %>
+
+</table>
+
+<a href="/usuarios/addusuarios">Crear Usuario</a>
+
+<%- include('partials/_footer') %>

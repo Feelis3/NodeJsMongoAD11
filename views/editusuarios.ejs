@@ -1,0 +1,30 @@
+<%- include('partials/_header') %> <!--Prueba página-->
+
+<h2>Editar Usuario</h2>
+<form action="/usuarios/edit/<%= usuario._id %>" method="POST">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="<%= usuario.email %>" required><br>
+
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" value="<%= usuario.password %>" required><br>
+
+    <label for="name">Nombre:</label>
+    <input type="text" id="name" name="name" value="<%= usuario.name %>" required><br>
+
+    <label for="lastName">Apellido:</label>
+    <input type="text" id="lastName" name="lastName" value="<%= usuario.lastName %>" required><br>
+
+    <label for="age">Edad:</label>
+    <input type="number" id="age" name="age" value="<%= usuario.age %>" required><br>
+
+    <label for="role">Rol:</label>
+    <select name="role" id="role">
+        <option value="0" <%= usuario.role === 0 ? 'selected' : '' %>>Alumno</option>
+        <option value="1" <%= usuario.role === 1 ? 'selected' : '' %>>Profesor</option>
+        <option value="2" <%= usuario.role === 2 ? 'selected' : '' %>>Administrador</option>
+    </select><br>
+
+    <button type="submit">Guardar Cambios</button>
+</form>
+
+<%- include('partials/_footer') %>

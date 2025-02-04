@@ -1,7 +1,9 @@
 // routes/users.js
+const User = require('../models/user');
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+
 const User = require('../models/user');
 const Usuario = require("../models/user");
 
@@ -15,6 +17,7 @@ router.get('/', async (req, res, next) => {
     console.log("Usuario no autenticado"); // Log para saber si entra en el else
     res.render('index'); // Si no está autenticado, solo renderiza la página sin las asignaturas
   }
+
 });
 
 
@@ -66,27 +69,112 @@ router.post('/signup', passport.authenticate('local-signup', {
 
 
 
-//Añadir usuario
-router.post('/usuarios/add', passport.authenticate('local-signup', { //Verifico registro
-  successRedirect: '/usuarios', //Éxito -> página usuarios
-  failureRedirect: '/usuarios/registrousuarios', //Fallo -> vuelve a la página para registrarse de nuevo
-  failureFlash: true
-}))
-
-router.get('usuarios/registrousuarios', isAuthenticated, async (req, res, next) => {
-  if (req.user.role == "0") { //Si el usuario es un Admin
-    var usuario = new Usuario(); //Para interactuar con usuarios
-    //¿Añadir asignatura?
-
-    //await se utiliza para esperar a que algo se cumpla
-    usuario = await usuario.findById(req.params.id); //Devuelve un usuario
-
-    //Genero la página html para el cliente
-    res.render('registrousuarios.ejs', usuario) //-ejs es la página a renderizar, le paso el usuario
+//(Administrador) Crear Usuario
+//(addusuarios)
+router.get('/usuarios/addusuarios', isAuthenticated, (req, res) => {
+  if (req.user.role === 2){
+    res.render('addusuarios'); //Redirige a la página donde se crean los usuarios
   } else {
-    return res.redirect('/perfilusuario'); //Si no es un admin le mando a ver su perfil
+    res.redirect('/error');
   }
 })
+
+//Procesar la creación de usuario
+router.post('/usuarios/add', isAuthenticated, async (req, res) => {
+  if (req.user.role === 2){
+    try{
+      const encryptedPassword = bcrypt.hashSync(req.body.password);
+
+      const newUser = new User({
+        email: req.body.email,
+        password: encryptedPassword,
+        name: req.body.name,
+        lastName: req.body.lastName,
+        age: req.body.age,
+        role: req.body.role,
+        asignaturas: req.body.asignaturas ? req.body.asignaturas.split(',') : []
+      })
+
+      await newUser.save(); //Guardo el usuario en la base de datos
+      res.redirect('/usuarios'); //Redirige al listado de usuarios
+    }catch (error){
+      res.status(500).send("Error al crear el usuario");
+    }
+  } else {
+    res.redirect('/error');
+  }
+})
+
+//(Administrador) Editar Usuario
+router.get('/usuarios/editusuarios/:id', isAuthenticated, async (req, res) => {
+  if (req.user.role === 2){
+    try {
+      const usuario = await User.findById(req.params.id); //Busco usuario por ID
+
+      if (!usuario) {
+        return res.redirect('/usuarios'); //Si no se encuentra el usuario vuelve a la lista de usuarios
+      }
+
+      res.render('editusuarios', {usuario});
+    } catch (error) {
+      res.status(500).send("Error al obtener el usuario");
+    }
+  } else {
+    return res.redirect('/error');
+  }
+})
+
+// Ruta para actualizar el usuario **REVISAR ENCRIPTACIÓN**
+router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
+  if (req.user.role === 2) {
+    try {
+      const { email, password, name, lastName, age, role } = req.body; //Obtengo los datos del formulario
+      let updatedUser = { email, name, lastName, age, role };
+
+      if (password) {
+        updatedUser.password = await bcrypt.hashSync(req.body.password); // Encriptar la nueva contraseña, puedo que no haga falta
+      }
+
+      const usuario = await User.findByIdAndUpdate(
+          req.params.id,
+          updatedUser,  //Le paso los datos actualizados, incluida la contraseña si se cambió
+          { new: true }
+      );
+
+      if (!usuario) {
+        return res.redirect('/usuarios');  //Si no se encuentra el usuario, redirigir al listado
+      }
+
+      res.redirect('/usuarios');
+    } catch (error) {
+      console.error("Error al actualizar el usuario:", error);
+      res.status(500).send('Error al actualizar el usuario');
+    }
+  } else {
+    return res.redirect('/error');
+  }
+});
+
+//(Administrador) Eliminar Usuario
+router.post('/usuarios/delete/:id', isAuthenticated, async (req, res) => {
+  if (req.user.role === 2) {
+    try {
+      const usuario = await User.findByIdAndDelete(req.params.id);
+
+      if (!usuario) {
+        return res.redirect('/usuarios'); //Si no se encuentra el usuario, va al listado
+      }
+
+      res.redirect('/usuarios');
+    } catch (err) {
+      console.error("Error al eliminar el usuario:", err);
+      res.status(500).send('Error al eliminar el usuario');
+    }
+  } else {
+    return res.redirect('/error');
+  }
+});
+
 
 
 //RUTA MANEJAR ERRORES (error.ejs)
@@ -98,9 +186,23 @@ function isAuthenticated(req, res, next) {
   if(req.isAuthenticated()) {
     return next();
   }
-
   res.redirect('/')
 }
+
+//Página Usuarios
+router.get('/usuarios', isAuthenticated, async (req, res) => {
+  if (req.user.role === 2) { //Si es un Admin
+    try {
+      const usuarios = await User.find();  // Obtengo todos los usuarios
+      res.render('usuarios', { usuarios }); //Renderizo la view y le paso los usuarios
+    } catch (err) {
+      console.error("Error al obtener usuarios:", err);
+      res.status(500).send('Error al obtener los usuarios');
+    }
+  } else {
+    //res.redirect('/error');
+  }
+});
 
 module.exports = router;
 
