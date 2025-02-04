@@ -1,0 +1,36 @@
+<%- include('partials/_header') %> <!--Prueba página-->
+
+<div class="container mt-4">
+    <h1 class="mb-3">Lista de Profesores</h1>
+    <table class="table table-striped table-bordered table-hover">
+
+        <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <% if (profesores && profesores.length > 0) { %>
+            <% profesores.forEach(profesor => { %>
+                <tr>
+                    <td><%= profesor.name %></td>
+                    <td><%= profesor.lastName %></td>
+                    <td><%= profesor.email %></td>
+                </tr>
+            <% }) %>
+        <% } else { %>
+            <tr>
+                <td colspan="3" class="text-center">No hay profesores para mostrar</td>
+            </tr>
+        <% } %>
+        </tbody>
+
+    </table>
+</div>
+
+
+
+<%- include('partials/_footer') %>

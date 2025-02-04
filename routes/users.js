@@ -5,6 +5,7 @@ const passport = require('passport');
 
 const User = require('../models/user');
 const Usuario = require("../models/user");
+const Asignatura = require("../models/asignatura");
 
 const bcrypt = require('bcrypt-nodejs');
 
@@ -73,9 +74,12 @@ router.post('/signup', passport.authenticate('local-signup', {
 
 //(Administrador) Crear Usuario
 //(addusuarios)
-router.get('/usuarios/addusuarios', isAuthenticated, (req, res) => {
+router.get('/usuarios/addusuarios', isAuthenticated, async (req, res) => {
   if (req.user.role === 2){
-    res.render('addusuarios'); //Redirige a la página donde se crean los usuarios
+    const asignaturas = await Asignatura.find();
+    res.render('addusuarios', {
+      asignaturas
+    }); //Redirige a la página donde se crean los usuarios
   } else {
     res.redirect('/');
   }
@@ -94,7 +98,7 @@ router.post('/usuarios/add', isAuthenticated, async (req, res) => {
         lastName: req.body.lastName,
         age: req.body.age,
         role: req.body.role,
-        asignaturas: req.body.asignaturas ? req.body.asignaturas.split(',') : []
+        asignaturas: req.body.asignaturas
       })
 
       await newUser.save(); //Guardo el usuario en la base de datos
@@ -197,14 +201,37 @@ router.get('/usuarios', isAuthenticated, async (req, res) => {
     try {
       const usuarios = await User.find();  // Obtengo todos los usuarios
       res.render('usuarios', { usuarios }); //Renderizo la view y le paso los usuarios
-    } catch (err) {
-      console.error("Error al obtener usuarios:", err);
+    } catch (error) {
+      console.error("Error al obtener usuarios:", error);
       res.status(500).send('Error al obtener los usuarios');
     }
   } else {
     //res.redirect('/error');
   }
 });
+
+//Página Profesores
+router.get('/profesores', isAuthenticated, async (req, res) => {
+  if (req.user.role === 2) { //Si es un Admin
+    try {
+      const usuarios = await User.find(); //Obtengo todos los usuarios
+      const profesores = []; //Array vacio
+      for (let i = 0; i < usuarios.length; i++) {
+        if (usuarios[i].role === 1) { //Si el usuario es un profesor
+          profesores.push(usuarios[i]); //Le añado a profesores
+        }
+      }
+
+      res.render('profesores', { profesores }); //Renderizo la view y le paso los profesores
+    } catch (error) {
+      console.error("Error al obtener profesores:", error);
+      res.status(500).send('Error al obtener los profesores');
+    }
+  } else {
+    //res.redirect('/error');
+  }
+});
+
 
 module.exports = router;
 

@@ -43,14 +43,14 @@ userSchema.methods.findEmail = async function (email) {
       .catch(error => console.log(error));
 };
 
-// Método para insertar un usuario
+// Método para insertar un usuario *Esto no sirve, creo*
 userSchema.methods.insert = async function () {
   await this.save()
       .then(result => console.log(result))
       .catch(error => console.log(error));
 };
 
-// Método para eliminar un usuario
+// Método para eliminar un usuario *Esto no sirve, creo*
 userSchema.methods.delete = async function (id) {
   const User = mongoose.model("user", userSchema);
   await User.deleteOne({ '_id': id })
