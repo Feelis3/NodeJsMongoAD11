@@ -5,6 +5,7 @@ const passport = require('passport');
 
 const User = require('../models/user');
 const Usuario = require("../models/user");
+const Asignatura = require("../models/asignatura");
 
 const bcrypt = require('bcrypt-nodejs');
 
@@ -73,9 +74,12 @@ router.post('/signup', passport.authenticate('local-signup', {
 
 //(Administrador) Crear Usuario
 //(addusuarios)
-router.get('/usuarios/addusuarios', isAuthenticated, (req, res) => {
+router.get('/usuarios/addusuarios', isAuthenticated, async (req, res) => {
   if (req.user.role === 2){
-    res.render('addusuarios'); //Redirige a la página donde se crean los usuarios
+    const asignaturas = await Asignatura.find();
+    res.render('addusuarios', {
+      asignaturas
+    }); //Redirige a la página donde se crean los usuarios
   } else {
     res.redirect('/');
   }
