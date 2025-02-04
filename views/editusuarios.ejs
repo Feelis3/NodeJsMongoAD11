@@ -1,30 +1,44 @@
 <%- include('partials/_header') %> <!--Prueba página-->
+<div class="container mt-5">
+<div class="card shadow-lg p-4">
+    <h2 class="text-center mb-4">Editar Usuario</h2>
+    <form action="/usuarios/edit/<%= usuario._id %>" method="POST">
+        <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" value="<%= usuario.email %>" required>
+        </div>
 
-<h2>Editar Usuario</h2>
-<form action="/usuarios/edit/<%= usuario._id %>" method="POST">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" value="<%= usuario.email %>" required><br>
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña:</label>
+            <input type="password" id="password" name="password" class="form-control" value="<%= usuario.password %>" required>
+        </div>
 
-    <label for="password">Contraseña:</label>
-    <input type="password" id="password" name="password" value="<%= usuario.password %>" required><br>
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre:</label>
+            <input type="text" id="name" name="name" class="form-control" value="<%= usuario.name %>" required>
+        </div>
 
-    <label for="name">Nombre:</label>
-    <input type="text" id="name" name="name" value="<%= usuario.name %>" required><br>
+        <div class="mb-3">
+            <label for="lastName" class="form-label">Apellido:</label>
+            <input type="text" id="lastName" name="lastName" class="form-control" value="<%= usuario.lastName %>" required>
+        </div>
 
-    <label for="lastName">Apellido:</label>
-    <input type="text" id="lastName" name="lastName" value="<%= usuario.lastName %>" required><br>
+        <div class="mb-3">
+            <label for="age" class="form-label">Edad:</label>
+            <input type="number" id="age" name="age" class="form-control" value="<%= usuario.age %>" required>
+        </div>
 
-    <label for="age">Edad:</label>
-    <input type="number" id="age" name="age" value="<%= usuario.age %>" required><br>
+        <div class="mb-3">
+            <label for="role" class="form-label">Rol:</label>
+            <select name="role" id="role" class="form-select">
+                <option value="0" <%= usuario.role === 0 ? 'selected' : '' %>>Alumno</option>
+                <option value="1" <%= usuario.role === 1 ? 'selected' : '' %>>Profesor</option>
+                <option value="2" <%= usuario.role === 2 ? 'selected' : '' %>>Administrador</option>
+            </select>
+        </div>
 
-    <label for="role">Rol:</label>
-    <select name="role" id="role">
-        <option value="0" <%= usuario.role === 0 ? 'selected' : '' %>>Alumno</option>
-        <option value="1" <%= usuario.role === 1 ? 'selected' : '' %>>Profesor</option>
-        <option value="2" <%= usuario.role === 2 ? 'selected' : '' %>>Administrador</option>
-    </select><br>
-
-    <button type="submit">Guardar Cambios</button>
-</form>
-
+        <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
+    </form>
+</div>
+</div>
 <%- include('partials/_footer') %>
