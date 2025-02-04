@@ -7,6 +7,7 @@ const { Schema } = mongoose;
 const asignaturaSchema = new Schema({
     nombre:  { type: String, required: true },
     curso: { type: Schema.Types.ObjectId, ref:'cursos', required: true },
+    //alumnos
     subjects: [{ type: Schema.Types.ObjectId, ref: "users" }], default: [],
     profesor: { type: String}
 });
