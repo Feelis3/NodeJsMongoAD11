@@ -8,6 +8,21 @@ const Asignaturas = require("../models/asignatura");
 router.get('/asignaturas',isAuthenticated, async (req, res) => {
     const user = new Usuario();
     const tasks = await user.findAsignaturas(req.user._id);
+    for (const asignatura of tasks) {
+        console.log(asignatura.alumnos);
+
+        // Convertir los IDs en strings
+        const alumnosIds = asignatura.alumnos.map(id => id.toHexString());
+
+        // Obtener todos los alumnos con `name` y `lastname`
+        const alumnosConNombres = await Usuario.find(
+            { _id: { $in: alumnosIds } },
+            "name lastName" // <-- Aquí agregamos lastname
+        );
+        console.log(alumnosConNombres);
+
+        asignatura.alumnos = alumnosConNombres;
+    }
     res.render('asignaturas', {
         tasks
     });

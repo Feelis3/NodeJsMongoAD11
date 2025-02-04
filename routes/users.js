@@ -9,6 +9,9 @@ const Asignatura = require("../models/asignatura");
 
 const bcrypt = require('bcrypt-nodejs');
 
+const { ObjectId } = require("mongodb"); // Asegurar uso correcto de ObjectId
+
+
 
 router.get('/', async (req, res, next) => {
   if (req.isAuthenticated()) { // Verifica si el usuario está autenticado
@@ -87,29 +90,62 @@ router.get('/usuarios/addusuarios', isAuthenticated, async (req, res) => {
 
 //Procesar la creación de usuario
 router.post('/usuarios/add', isAuthenticated, async (req, res) => {
-  if (req.user.role === 2){
-    try{
+  if (req.user.role === 2) {
+    try {
       const encryptedPassword = bcrypt.hashSync(req.body.password);
+      const email = req.body.email;
 
+      // Verificar si el usuario ya existe
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        req.flash('createUser', 'The Email is already Taken.');
+        return res.redirect('/usuarios'); // Redirige con un mensaje de error
+      }
+
+      // Crear nuevo usuario
       const newUser = new User({
-        email: req.body.email,
+        email,
         password: encryptedPassword,
         name: req.body.name,
         lastName: req.body.lastName,
         age: req.body.age,
         role: req.body.role,
         asignaturas: req.body.asignaturas
-      })
+      });
 
-      await newUser.save(); //Guardo el usuario en la base de datos
-      res.redirect('/usuarios'); //Redirige al listado de usuarios
-    }catch (error){
+      const userN = await newUser.save(); // Guardar usuario en la BD
+      const userId = userN._id; // El ID ya es un ObjectId, no necesitas convertirlo
+      console.log("ID USUARIO ", userId);
+
+      /* AÑADIR USUARIO A LA ARRAY DE ASIGNATURA */
+      const asignaturas = req.body.asignaturas;
+      console.log("ASIGNATURAS ", asignaturas);
+
+      // AÑADE EL USUARIO A LA LISTA DE USUARIOS DE CADA ASIGNATURA
+      try {
+        for (const asignaturaId of asignaturas) {
+          console.log("ID ASIGNATURA ", asignaturaId);
+
+          const filtro = { _id: asignaturaId };
+          const update = { $push: { alumnos: userId } };
+
+          const resultado = await Asignatura.updateOne(filtro, update);
+          console.log(`Asignatura ${asignaturaId} actualizada: ${resultado.modifiedCount} documento(s) modificado(s)`);
+        }
+      } catch (error) {
+        console.error("Error al actualizar asignaturas: ", error);
+      }
+
+      res.redirect('/usuarios'); // Redirige al listado de usuarios
+    } catch (error) {
+      console.error("Error al crear el usuario: ", error);
       res.status(500).send("Error al crear el usuario");
     }
   } else {
     res.redirect('/');
   }
-})
+});
+
 
 //(Administrador) Editar Usuario
 router.get('/usuarios/editusuarios/:id', isAuthenticated, async (req, res) => {
@@ -165,8 +201,28 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
 router.post('/usuarios/delete/:id', isAuthenticated, async (req, res) => {
   if (req.user.role === 2) {
     try {
-      const usuario = await User.findByIdAndDelete(req.params.id);
 
+      const userId = req.params.id;
+      console.log("ID USUARIO ", userId);
+      /* OBTENER LAS ASIGNATURAS DEL USUARIO */
+      const user = new User();
+      const asig = await user.findAsignaturas(userId); // Asegurar await
+      console.log("ASIGNATURAS ", asig);
+      //SI TIENE ASIGNATURAS BORRA EL USUARIO DE LA LISTA DE USUARIOS DE LA ASIGNATURA
+      if (asig.length > 0) {
+        for (const asignatura of asig) {
+          console.log("ID ASIGNATURA ", asignatura.toString());
+
+          const filtro = { _id: new ObjectId(asignatura) };
+          const update = { $pull: { alumnos: new ObjectId(userId) } };
+
+          const resultado = await Asignatura.updateMany(filtro, update);
+          console.log(`Asignatura ${asignatura} actualizada: ${resultado.modifiedCount} documento(s) modificado(s)`);
+        }
+      }
+
+      /* ELIMINAR USUARIO */
+      const usuario = await User.findByIdAndDelete(userId);
       if (!usuario) {
         return res.redirect('/usuarios'); //Si no se encuentra el usuario, va al listado
       }

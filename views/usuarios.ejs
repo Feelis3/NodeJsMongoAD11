@@ -34,6 +34,9 @@
         </tbody>
 
     </table>
+    <%if (createUser) {%>
+        <p style="color:#FF0000;"><%= createUser %></p>
+    <% } %>
     <a href="/usuarios/addusuarios" class="btn btn-primary">Crear Usuario</a>
 </div>
 
