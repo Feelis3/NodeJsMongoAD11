@@ -1,0 +1,25 @@
+<%- include('partials/_header') %>  <!--Prueba Página-->
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">Crear Curso</h2>
+        <form action="/cursos/add" method="POST">
+            <div class="mb-3">
+                <label for="name" class="form-label">Nombre:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="year" class="form-label">Año:</label>
+                <input type="number" id="year" name="year" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo:</label>
+                <select name="tipo" id="tipo" class="form-select">
+                    <option value="Grado">Grado</option>
+                    <option value="Master">Master</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Crear Curso</button>
+        </form>
+    </div>
+</div>
+<%- include('partials/_footer') %>
