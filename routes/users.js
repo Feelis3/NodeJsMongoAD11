@@ -98,7 +98,7 @@ router.post('/usuarios/add', isAuthenticated, async (req, res) => {
         lastName: req.body.lastName,
         age: req.body.age,
         role: req.body.role,
-        asignaturas: req.body.asignaturas ? req.body.asignaturas.split(',') : []
+        asignaturas: req.body.asignaturas
       })
 
       await newUser.save(); //Guardo el usuario en la base de datos
