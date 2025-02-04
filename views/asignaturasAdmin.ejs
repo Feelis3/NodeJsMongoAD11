@@ -1,0 +1,37 @@
+<%- include('partials/_header') %> <!--Prueba página-->
+
+<div class="container mt-4">
+    <h1 class="mb-3">Lista de Asignaturas</h1>
+    <table class="table table-striped table-bordered table-hover">
+
+        <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Curso</th>
+            <th>Profesor</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <% if (asignaturas && asignaturas.length > 0) { %>
+            <% asignaturas.forEach(tasks => { %>
+                <tr>
+                    <td><%= tasks.nombre %></td>
+                    <td><%= tasks.curso %></td>
+                    <td><%= tasks.profesor %></td>
+                    <td></td>
+                </tr>
+            <% }) %>
+        <% } else { %>
+            <tr>
+                <td colspan="3" class="text-center">No hay usuarios para mostrar</td>
+            </tr>
+        <% } %>
+        </tbody>
+
+    </table>
+    <a href="/usuarios/addusuarios" class="btn btn-primary">Crear Usuario</a>
+</div>
+
+<%- include('partials/_footer') %>

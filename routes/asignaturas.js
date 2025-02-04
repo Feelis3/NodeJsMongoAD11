@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Usuario = require('../models/user');
+const passport = require("passport");
+const Asignaturas = require("../models/asignatura");
 
 
 router.get('/asignaturas',isAuthenticated, async (req, res) => {
@@ -18,4 +20,24 @@ function isAuthenticated(req, res, next) {
 
     res.redirect('/')
 }
+
+//GET
+
+router.get('/asignaturasAdmin', isAuthenticated, async (req, res, next) => {
+    if (req.user.role === 2){
+        try {
+            const asignaturas = await Asignaturas.find();
+
+            res.render('asignaturasAdmin', {
+                asignaturas
+            });
+        }catch(err){
+            Console.log(err);
+        }
+
+    } else {
+        res.redirect('/');
+    }
+});
+
 module.exports = router;
