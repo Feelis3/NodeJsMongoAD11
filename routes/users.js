@@ -77,7 +77,7 @@ router.get('/usuarios/addusuarios', isAuthenticated, (req, res) => {
   if (req.user.role === 2){
     res.render('addusuarios'); //Redirige a la página donde se crean los usuarios
   } else {
-    res.redirect('/error');
+    res.redirect('/');
   }
 })
 
@@ -103,7 +103,7 @@ router.post('/usuarios/add', isAuthenticated, async (req, res) => {
       res.status(500).send("Error al crear el usuario");
     }
   } else {
-    res.redirect('/error');
+    res.redirect('/');
   }
 })
 
@@ -122,7 +122,7 @@ router.get('/usuarios/editusuarios/:id', isAuthenticated, async (req, res) => {
       res.status(500).send("Error al obtener el usuario");
     }
   } else {
-    return res.redirect('/error');
+    return res.redirect('/');
   }
 })
 
@@ -153,7 +153,7 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
       res.status(500).send('Error al actualizar el usuario');
     }
   } else {
-    return res.redirect('/error');
+    return res.redirect('/');
   }
 });
 
@@ -173,7 +173,7 @@ router.post('/usuarios/delete/:id', isAuthenticated, async (req, res) => {
       res.status(500).send('Error al eliminar el usuario');
     }
   } else {
-    return res.redirect('/error');
+    return res.redirect('/');
   }
 });
 
