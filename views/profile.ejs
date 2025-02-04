@@ -1,5 +1,16 @@
 <%- include('partials/_header') %>
 
+<style>
+    .accordion-button {
+        background-color: #28a745;
+        color: white;
+    }
+    .accordion-button:not(.collapsed) {
+        background-color: #28a745;
+        color: white;
+    }
+
+</style>
 <div class="container">
     <div class="profile-card">
         <h2 class="text-center">Perfil del Usuario</h2>
@@ -20,11 +31,26 @@
         <hr class="my-4">
         <div class="asignaturas">
             <h4 class="text-center mb-3">Asignaturas</h4>
-            <% tasks.forEach(function(asignatura, index) { %>
-                <div class="asignatura <%= index % 3 === 0 ? 'bg-primary' : index % 3 === 1 ? 'bg-warning' : 'bg-success' %> text-white">
-                    <%= asignatura.nombre %>
-                </div>
-            <% }) %>
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <% tasks.forEach(function(asignatura, index) { %>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<%= index %>" aria-expanded="false" aria-controls="flush-collapse<%= index %>">
+                                <%= asignatura.nombre %>
+                            </button>
+                        </h2>
+                        <div id="flush-collapse<%= index %>" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                Contenido de la asignatura <strong><%= asignatura.nombre %></strong>.
+                            </div>
+                            <div class="accordion-body">
+                                Profesor de la asignatura <strong><%= asignatura.profesor %></strong>.
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+
         </div>
 
     </div>
