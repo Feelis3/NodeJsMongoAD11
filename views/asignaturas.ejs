@@ -34,6 +34,14 @@
                         <div class="card-body">
                             <p class="card-text"><strong>Curso:</strong> 1° de Bachillerato</p>
                             <p class="card-text"><strong>Profesor: </strong><%= asignatura.profesor %></p>
+
+                            <% if (asignatura.alumnos) { %>
+                                <p>Alumnos:</p>
+                                <ul>
+                                    <%asignatura.alumnos.forEach(alumno=>{%>
+                                        <li><%= alumno.name + " " + alumno.lastName %></li>                                    <%})%>
+                                </ul>
+                            <% } %>
                         </div>
                     </div>
                 </div>

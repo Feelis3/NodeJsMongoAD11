@@ -9,6 +9,9 @@ const Asignatura = require("../models/asignatura");
 
 const bcrypt = require('bcrypt-nodejs');
 
+const { ObjectId } = require("mongodb"); // Asegurar uso correcto de ObjectId
+
+
 
 router.get('/', async (req, res, next) => {
   if (req.isAuthenticated()) { // Verifica si el usuario está autenticado
@@ -91,6 +94,9 @@ router.post('/usuarios/add', isAuthenticated, async (req, res) => {
     try{
       const encryptedPassword = bcrypt.hashSync(req.body.password);
 
+
+
+
       const newUser = new User({
         email: req.body.email,
         password: encryptedPassword,
@@ -101,7 +107,27 @@ router.post('/usuarios/add', isAuthenticated, async (req, res) => {
         asignaturas: req.body.asignaturas
       })
 
-      await newUser.save(); //Guardo el usuario en la base de datos
+      const userN = await newUser.save(); //Guardo el usuario en la base de datos
+      const userId = userN._id.toHexString();
+      console.log("ID USUARIO ",userId);
+      /*AÑADIR USUARIO A LA ARRAY DE ASIGNATURA*/
+      const asig = req.body.asignaturas;
+      console.log("ASIGNATURAS ",asig);
+      //AÑADE EL USUARIO A LA LISTA DE USUARIOS DE LA ASIGNATURA
+      try{
+        asig.forEach ( async asignatura => {
+          console.log("ID ASIGNATURA ",asignatura.toString());
+          const filtro = { _id: asignatura};
+          const update = { $push: { alumnos: new ObjectId(userId) } };
+
+          const resultado = await Asignatura.updateOne(filtro, update);
+          console.log(`Asignatura ${asignatura._id} actualizada: ${resultado.modifiedCount} documento(s) modificado(s)`);
+        });
+
+      }catch (error2){
+        console.log(error2);
+      }
+
       res.redirect('/usuarios'); //Redirige al listado de usuarios
     }catch (error){
       res.status(500).send("Error al crear el usuario");
@@ -165,8 +191,28 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
 router.post('/usuarios/delete/:id', isAuthenticated, async (req, res) => {
   if (req.user.role === 2) {
     try {
-      const usuario = await User.findByIdAndDelete(req.params.id);
 
+      const userId = req.params.id;
+      console.log("ID USUARIO ", userId);
+      /* OBTENER LAS ASIGNATURAS DEL USUARIO */
+      const user = new User();
+      const asig = await user.findAsignaturas(userId); // Asegurar await
+      console.log("ASIGNATURAS ", asig);
+      //SI TIENE ASIGNATURAS BORRA EL USUARIO DE LA LISTA DE USUARIOS DE LA ASIGNATURA
+      if (asig.length > 0) {
+        for (const asignatura of asig) {
+          console.log("ID ASIGNATURA ", asignatura.toString());
+
+          const filtro = { _id: new ObjectId(asignatura) };
+          const update = { $pull: { alumnos: new ObjectId(userId) } };
+
+          const resultado = await Asignatura.updateMany(filtro, update);
+          console.log(`Asignatura ${asignatura} actualizada: ${resultado.modifiedCount} documento(s) modificado(s)`);
+        }
+      }
+
+      /* ELIMINAR USUARIO */
+      const usuario = await User.findByIdAndDelete(userId);
       if (!usuario) {
         return res.redirect('/usuarios'); //Si no se encuentra el usuario, va al listado
       }
