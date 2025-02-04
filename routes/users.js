@@ -5,9 +5,18 @@ const passport = require('passport');
 const User = require('../models/user');
 const Usuario = require("../models/user");
 
-router.get('/', (req, res, next) => {
-  res.render('index');
+router.get('/', async (req, res, next) => {
+  if (req.isAuthenticated()) { // Verifica si el usuario está autenticado
+    console.log("Usuario autenticado"); // Log para saber si entra en el if
+    const user = new Usuario();
+    const tasks = await user.findAsignaturas(req.user._id);
+    res.render('index', { tasks });
+  } else {
+    console.log("Usuario no autenticado"); // Log para saber si entra en el else
+    res.render('index'); // Si no está autenticado, solo renderiza la página sin las asignaturas
+  }
 });
+
 
 
 router.get('/signin', (req, res, next) => {
