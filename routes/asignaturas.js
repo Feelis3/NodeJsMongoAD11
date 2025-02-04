@@ -55,4 +55,14 @@ router.get('/asignaturasAdmin', isAuthenticated, async (req, res, next) => {
     }
 });
 
+//(Administrador) Crear Asignatura
+//(addasignaturas)
+router.get('/asignaturas/addasignaturas', isAuthenticated, (req, res) => {
+    if (req.user.role === 2){
+        res.render('addasignaturas'); //Redirige a la página donde se crean las asignaturas
+    } else {
+        res.redirect('/');
+    }
+})
+
 module.exports = router;
