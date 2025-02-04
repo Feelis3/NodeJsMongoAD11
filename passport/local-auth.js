@@ -32,6 +32,7 @@ passport.use('local-signup', new LocalStrategy({
         newUser.name = req.body.name; // Obtener el nombre del cuerpo de la solicitud
         newUser.age = req.body.age; // Obtener la edad del cuerpo de la solicitud
         newUser.lastName =  req.body.lastName;
+
         await newUser.insert()
             .then(result => console.log(result))
             .catch(error => console.log(error));

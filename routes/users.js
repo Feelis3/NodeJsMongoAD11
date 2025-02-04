@@ -1,14 +1,25 @@
 // routes/users.js
-const User = require('../models/user');
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const bcrypt = require('bcrypt-nodejs');
 
+const User = require('../models/user');
+const Usuario = require("../models/user");
 
-router.get('/', (req, res, next) => {
-  res.render('index');
+router.get('/', async (req, res, next) => {
+  if (req.isAuthenticated()) { // Verifica si el usuario está autenticado
+    console.log("Usuario autenticado"); // Log para saber si entra en el if
+    const user = new Usuario();
+    const tasks = await user.findAsignaturas(req.user._id);
+    res.render('index', { tasks });
+  } else {
+    console.log("Usuario no autenticado"); // Log para saber si entra en el else
+    res.render('index'); // Si no está autenticado, solo renderiza la página sin las asignaturas
+  }
+
 });
+
+
 
 router.get('/signin', (req, res, next) => {
   res.render('signin'); // Asegúrate de que la vista signin.ejs exista
@@ -41,8 +52,12 @@ router.post('/signup', passport.authenticate('local-signup', {
 }));
 
 //PROFILE
-router.get('/profile',isAuthenticated ,(req, res, next) => {
-  res.render('profile');
+router.get('/profile',isAuthenticated , async (req, res, next) => {
+  const user = new Usuario();
+  const tasks = await user.findAsignaturas(req.user._id);
+  res.render('profile', {
+    tasks
+  });
 });
 
 router.post('/signup', passport.authenticate('local-signup', {
