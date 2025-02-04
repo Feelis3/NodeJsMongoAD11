@@ -18,7 +18,8 @@ const userSchema = new Schema({
   name: { type: String, required: true },
   lastName: { type: String, required: true },
   age: { type: Number, required: true },
-  role: {type: Number, required: true, default: 0}
+  role: {type: Number, required: true, default: 0},
+  asignaturas: [{ type: Schema.Types.ObjectId, ref: "asignaturas" }]
 });
 
 userSchema.methods.encryptPassword = (password) => {

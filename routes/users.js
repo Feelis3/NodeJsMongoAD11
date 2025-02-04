@@ -52,25 +52,37 @@ router.post('/signup', passport.authenticate('local-signup', {
 
 
 
-//Añadir usuario
-router.post('/usuarios/add', passport.authenticate('local-signup', { //Verifico registro
-  successRedirect: '/usuarios', //Éxito -> página usuarios
-  failureRedirect: '/usuarios/registrousuarios', //Fallo -> vuelve a la página para registrarse de nuevo
-  failureFlash: true
-}))
-
-router.get('usuarios/registrousuarios', isAuthenticated, async (req, res, next) => {
-  if (req.user.role == "0") { //Si el usuario es un Admin
-    var usuario = new Usuario(); //Para interactuar con usuarios
-    //¿Añadir asignatura?
-
-    //await se utiliza para esperar a que algo se cumpla
-    usuario = await usuario.findById(req.params.id); //Devuelve un usuario
-
-    //Genero la página html para el cliente
-    res.render('registrousuarios.ejs', usuario) //-ejs es la página a renderizar, le paso el usuario
+//(Administrador) Crear Usuario
+//Ruta para mostrar el formulario de creación de usuario (addusuarios)
+router.get('/usuarios/addusuarios', isAuthenticated, (req, res) => {
+  if (req.user.role === 2){
+    res.render('addusuarios'); //Redirige a la página donde se crean los usuarios
   } else {
-    return res.redirect('/perfilusuario'); //Si no es un admin le mando a ver su perfil
+    res.redirect('/error');
+  }
+})
+
+//Procesar la creación de usuario
+router.post('/usuarios/add', isAuthenticated, async (req, res) => {
+  if (req.user.role === 2){
+    try{
+      const newUser = new User({
+        email: req.body.email,
+        password: req.body.password,
+        name: req.body.name,
+        lastName: req.body.lastName,
+        age: req.body.age,
+        role: req.body.role,
+        asignaturas: req.body.asignaturas ? req.body.asignaturas.split(',') : []
+      })
+
+      await newUser.save(); //Guardo el usuario en la base de datos
+      res.redirect('/usuarios'); //Redirige al listado de usuarios
+    }catch (error){
+      res.status(500).send("Error al crear el usuario");
+    }
+  } else {
+    res.redirect('/error');
   }
 })
 
