@@ -195,11 +195,21 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
         return res.redirect('/usuarios'); // Redirige con un mensaje de error
       }
 
+      const asignaturasAntiguaUpdateUser = Array.isArray(req.body.asignaturas)
+          ? req.body.asignaturas
+          : [req.body.asignaturas];
+
+      const asignaturasNuevasUpdateUser= Array.isArray(updatedUser.asignaturas)
+          ? updatedUser.asignaturas
+          : [updatedUser.asignaturas];
+      const asignaturasNuevasExistingUser= Array.isArray(existingUser.asignaturas)
+          ? existingUser.asignaturas
+          : [existingUser.asignaturas];
+
+
       if(updatedUser.role==0) {
-
-
         //Añadir usuario a la asignatura donde se haya añadido
-        const asignaturasNuevas = updatedUser.asignaturas.filter(item => !antiguoEmail.asignaturas.includes(item));
+        const asignaturasNuevas = asignaturasAntiguaUpdateUser.filter(item => !asignaturasNuevasExistingUser.includes(item));
         if(asignaturasNuevas.length > 0) {
           for (const asignaturaId of asignaturasNuevas) {
             await Asignatura.updateOne( { _id: asignaturaId }, { $push: { alumnos: req.params.id } });
@@ -207,15 +217,6 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
         }
 
 
-
-        //Quitar usuario donde se haya quitado
-
-        const asignaturasQuitar = antiguoEmail.asignaturas.filter(item => !updatedUser.asignaturas.includes(item));
-        if(asignaturasQuitar.length > 0) {
-          for (const asignaturaId of asignaturasQuitar) {
-            await Asignatura.updateOne( { _id: asignaturaId }, { $pull: { alumnos: req.params.id } });
-          }
-        }
 
       }
 
