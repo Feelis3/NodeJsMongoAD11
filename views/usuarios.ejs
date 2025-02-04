@@ -13,9 +13,11 @@
                 <td><%= usuario.email %></td>
                 <td><%= usuario.role %></td>
                 <td>
-                    <a href="/usuarios/editar/<%= usuario._id %>">Editar</a>
-                    <a href="/usuarios/eliminar/<%= usuario._id %>">Eliminar</a>
-                    <a href="/usuarios/asignar/<%= usuario._id %>">Asignar Rol</a>
+                    <a href="/usuarios/editusuarios/<%= usuario._id %>">Editar</a>
+                    <form action="/usuarios/delete/<%= usuario._id %>" method="POST">
+                        <button type="submit" class="#">Eliminar</button>
+                    </form>
+
                 </td>
             </tr>
         <% }) %>
