@@ -195,6 +195,8 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
         return res.redirect('/usuarios'); // Redirige con un mensaje de error
       }
 
+
+      //QUITAR DE LAS LISTAS DE ASIGNATURA Y AÑADIR A LISTA DE ASIGNATURA EL USUARIO
       const asignaturasAntiguaUpdateUser = Array.isArray(req.body.asignaturas)
           ? req.body.asignaturas
           : [req.body.asignaturas];
@@ -216,10 +218,21 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
           }
         }
 
+        const asignaturasQuitar = asignaturasNuevasExistingUser
+            .map(obj => obj.toString()) // Convertimos los ObjectId a string
+            .filter(item => !asignaturasNuevasUpdateUser.includes(item));
 
+        for (const asignaturaId of asignaturasQuitar) {
+          const filtro = { _id: new ObjectId(asignaturaId) };
+          const update = { $pull: { alumnos: new ObjectId(req.params.id) } };
+          const resultado = await Asignatura.updateOne(filtro, update);
+          console.log(`Asignatura actualizada: ${resultado.modifiedCount} documento(s) modificado(s)`);
+        }
 
       }
 
+
+      //ACTUALIZA
       const usuario = await User.findByIdAndUpdate(
           req.params.id,
           updatedUser,
