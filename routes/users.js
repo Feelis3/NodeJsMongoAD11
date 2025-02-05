@@ -130,8 +130,9 @@ router.post('/usuarios/add', isAuthenticated, async (req, res) => {
       console.log("ID USUARIO ", userId);
 
       /* AÑADIR USUARIO A LA ARRAY DE ASIGNATURA */
-      const asignaturas = req.body.asignaturas;
-      console.log("ASIGNATURAS ", asignaturas);
+      const asignaturas = Array.isArray(req.body.asignaturas)
+          ? req.body.asignaturas
+          : [req.body.asignaturas];
 
       // AÑADE EL USUARIO A LA LISTA DE USUARIOS DE CADA ASIGNATURA
       try {
