@@ -20,7 +20,12 @@
                     <td><%= curso.name %></td>
                     <td><%= curso.year %></td>
                     <td><%= curso.tipo %></td>
-                    <td></td>
+                    <td>
+                        <a href="/cursos/editCurso/<%= curso._id %>" class="btn btn-warning btn-sm">Editar</a>
+                        <form action="/cursos/delete/<%= curso._id %>" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
             <% }) %>
         <% } else { %>
