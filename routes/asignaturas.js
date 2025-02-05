@@ -84,8 +84,18 @@ router.get('/asignaturasAdmin', isAuthenticated, async (req, res, next) => {
 router.get('/asignaturas/addasignaturas', isAuthenticated, async (req, res) => {
     if (req.user.role === 2){
         const cursos = await Cursos.find();
+        const usuar = await Usuario.find();
+        const profesores = [];
+        usuar.forEach((user) => {
+            if (user.role === 1){
+                profesores.push(user);
+            }
+        })
+        profesores.forEach(profesore => {
+            console.log(profesore);
+        })
         res.render('addasignaturas', {
-            cursos
+            cursos, profesores
         }); //Redirige a la página donde se crean las asignaturas
     } else {
         res.redirect('/');
@@ -101,7 +111,7 @@ router.post('/asignaturas/add', isAuthenticated, async (req, res) => {
                 nombre: req.body.nombre,
                 curso: req.body.curso,
                 alumnos: [],
-                profesor: ''
+                profesor: req.body.profesor
             })
 
             await newAsignatura.save(); //Guardo el Curso en la base de datos

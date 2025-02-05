@@ -19,7 +19,8 @@
                 <tr>
                     <td><%= tasks.nombre %></td>
                     <td><%= tasks.curso.name %></td>
-                    <td><%= tasks.profesor %></td>
+                    <!-- Si despues de borrar todas las asignaturas sin profesor sigue sin cargar esta pagina, eliminar el (.name) de profesor-->
+                    <td><%= tasks.profesor.name %></td>
                     <td></td>
                 </tr>
             <% }) %>
