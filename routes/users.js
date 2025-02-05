@@ -232,7 +232,18 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
 
       }
 
+//SI ES PROFESOR O ADMINISTRADOR LOS SACA DE LA ASIGNATURA
+      if(updatedUser.role==1||updatedUser.role==2){
+        updatedUser.asignaturas = [];
+        for (const asignatura of asignaturasNuevasUpdateUser) {
+          const filtro = { _id: new ObjectId(asignatura) };
+          const update = { $pull: { alumnos: new ObjectId(req.params.id) } };
+          const resultado = await Asignatura.updateOne(filtro, update);
+          console.log(`Asignatura actualizada: ${resultado.modifiedCount} documento(s) modificado(s)`);
+        }
+      }
 
+      
       //ACTUALIZA
       const usuario = await User.findByIdAndUpdate(
           req.params.id,
