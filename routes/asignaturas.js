@@ -3,11 +3,23 @@ const router = express.Router();
 const Usuario = require('../models/user');
 const passport = require("passport");
 const Asignaturas = require("../models/asignatura");
+const Curso = require("../models/Curso");
 
 
 router.get('/asignaturas',isAuthenticated, async (req, res) => {
     const user = new Usuario();
     const tasks = await user.findAsignaturas(req.user._id);
+    //Nombre del curso
+    for (const asig of tasks){
+        const asigId = asig.curso.toHexString();
+        const cursoConNombre = await Curso.find({
+                _id: { $in: asigId} },
+            "name"
+        );
+        console.log("CURSO :..",cursoConNombre)
+        asig.curso = cursoConNombre[0];
+    }
+    //Nombre de la asignatura
     for (const asignatura of tasks) {
         console.log(asignatura.alumnos);
 
@@ -43,6 +55,15 @@ router.get('/asignaturasAdmin', isAuthenticated, async (req, res, next) => {
         try {
             const asignaturas = await Asignaturas.find();
 
+            for (const asig of asignaturas){
+                const asigId = asig.curso.toHexString();
+                const cursoConNombre = await Curso.find({
+                    _id: { $in: asigId} },
+                    "name"
+                );
+                console.log(cursoConNombre)
+                asig.curso = cursoConNombre[0];
+            }
             res.render('asignaturasAdmin', {
                 asignaturas
             });

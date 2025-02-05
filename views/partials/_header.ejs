@@ -43,15 +43,18 @@
               <li class="nav-item">
                 <a class="nav-link" href="/profile">Perfil</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/usuarios">Usuarios</a> <!--De aquí crea, elimina, modifica y asigna roles a usuarios-->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="/usuarios" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Usuarios
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/usuarios">Todos los usuarios</a></li>
+                  <li><a class="dropdown-item" href="#">Alumnos</a></li>
+                  <li><a class="dropdown-item" href="/profesores">Profesores</a></li>
+                  <li><a class="dropdown-item" href="#">Administrador</a></li>
+                </ul>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/profesores">Profesores</a> <!--Aquí ve una lista de profesores, los puede asignar a asignaturas-->
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Alumnos</a> <!--Aquí ve una lista de alumnos, los puede asignar a asignaturas-->
-              </li>
+
               <li class="nav-item">
                 <a class="nav-link" href="/asignaturasAdmin">Asignaturas</a> <!--Aquí ve una lista de Asignaturas, los puede asignar a asignaturas-->
               </li>
@@ -61,6 +64,8 @@
               <li class="nav-item">
                 <a class="nav-link" href="/logout">Cerrar sesion</a>
               </li>
+
+
             </ul>
          <% }} else{ %>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">

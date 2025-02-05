@@ -46,6 +46,7 @@ app.use((req, res, next) => {
   app.locals.signinMessage = req.flash('signinMessage');
   app.locals.signupMessage = req.flash('signupMessage');
   app.locals.createUser = req.flash('createUser');
+  app.locals.editUser = req.flash('editUser');
   app.locals.user = req.user;
   next();
 });

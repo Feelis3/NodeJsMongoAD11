@@ -9,7 +9,9 @@ const Asignatura = require("../models/asignatura");
 
 const bcrypt = require('bcrypt-nodejs');
 
-const { ObjectId } = require("mongodb"); // Asegurar uso correcto de ObjectId
+const { ObjectId } = require("mongodb");
+const Curso = require("../models/Curso");
+const child_process = require("node:child_process"); // Asegurar uso correcto de ObjectId
 
 
 
@@ -18,6 +20,16 @@ router.get('/', async (req, res, next) => {
     console.log("Usuario autenticado"); // Log para saber si entra en el if
     const user = new Usuario();
     const tasks = await user.findAsignaturas(req.user._id);
+    //Consigue el nombre del curso
+    for (const asig of tasks){
+      const asigId = asig.curso.toHexString();
+      const cursoConNombre = await Curso.find({
+            _id: { $in: asigId} },
+          "name"
+      );
+      console.log("CURSO :..",cursoConNombre)
+      asig.curso = cursoConNombre[0];
+    }
     res.render('index', { tasks });
   } else {
     console.log("Usuario no autenticado"); // Log para saber si entra en el else
@@ -118,8 +130,9 @@ router.post('/usuarios/add', isAuthenticated, async (req, res) => {
       console.log("ID USUARIO ", userId);
 
       /* AÑADIR USUARIO A LA ARRAY DE ASIGNATURA */
-      const asignaturas = req.body.asignaturas;
-      console.log("ASIGNATURAS ", asignaturas);
+      const asignaturas = Array.isArray(req.body.asignaturas)
+          ? req.body.asignaturas
+          : [req.body.asignaturas];
 
       // AÑADE EL USUARIO A LA LISTA DE USUARIOS DE CADA ASIGNATURA
       try {
@@ -154,10 +167,11 @@ router.get('/usuarios/editusuarios/:id', isAuthenticated, async (req, res) => {
       const usuario = await User.findById(req.params.id); //Busco usuario por ID
 
       if (!usuario) {
-        return res.redirect('/usuarios'); //Si no se encuentra el usuario vuelve a la lista de usuarios
+        res.render('usuarios');
       }
+      const asignaturas = await Asignatura.find();
 
-      res.render('editusuarios', {usuario});
+      res.render('editusuarios', {usuario,asignaturas});
     } catch (error) {
       res.status(500).send("Error al obtener el usuario");
     }
@@ -170,16 +184,70 @@ router.get('/usuarios/editusuarios/:id', isAuthenticated, async (req, res) => {
 router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
   if (req.user.role === 2) {
     try {
-      const { email, password, name, lastName, age, role } = req.body; //Obtengo los datos del formulario
-      let updatedUser = { email, name, lastName, age, role };
+      const { email, name, lastName, age, role, asignaturas } = req.body; //Obtengo los datos del formulario
+      let updatedUser = { email, name, lastName, age, role, asignaturas };
 
-      if (password) {
-        updatedUser.password = await bcrypt.hashSync(req.body.password); // Encriptar la nueva contraseña, puedo que no haga falta
+      //COMPRUEBA QUE EL CORREO AL EDITAR ES DIFERENTE A UNO EQUE EXISTE Y NO SALTE ERROR SI EL QUE EXISTE ES EL ANTIGUO
+      const existingUser = await User.findOne({ email });
+      const antiguoEmail = await User.findById(req.params.id);
+
+      if (existingUser && existingUser.email !== antiguoEmail.email ) {
+        req.flash('editUser', 'The Email is already Taken.');
+        return res.redirect('/usuarios'); // Redirige con un mensaje de error
       }
 
+
+      //QUITAR DE LAS LISTAS DE ASIGNATURA Y AÑADIR A LISTA DE ASIGNATURA EL USUARIO
+      //ESTAS VARIABLES SE ASEGURAN QUE LE LLEGUE COMO ARRAY
+      const asignaturasAntiguaUpdateUser = Array.isArray(req.body.asignaturas)
+          ? req.body.asignaturas
+          : [req.body.asignaturas];
+      const asignaturasNuevasUpdateUser= Array.isArray(updatedUser.asignaturas)
+          ? updatedUser.asignaturas
+          : [updatedUser.asignaturas];
+      const asignaturasNuevasExistingUser= Array.isArray(existingUser.asignaturas)
+          ? existingUser.asignaturas
+          : [existingUser.asignaturas];
+
+
+      if(updatedUser.role==0) {
+        //Añadir usuario a la asignatura donde se haya añadido
+        const asignaturasNuevas = asignaturasAntiguaUpdateUser.filter(item => !asignaturasNuevasExistingUser.includes(item));
+        if(asignaturasNuevas.length > 0) {
+          for (const asignaturaId of asignaturasNuevas) {
+            await Asignatura.updateOne( { _id: asignaturaId }, { $push: { alumnos: req.params.id } });
+          }
+        }
+
+        const asignaturasQuitar = asignaturasNuevasExistingUser
+            .map(obj => obj.toString()) // Convertimos los ObjectId a string
+            .filter(item => !asignaturasNuevasUpdateUser.includes(item));
+
+        for (const asignaturaId of asignaturasQuitar) {
+          const filtro = { _id: new ObjectId(asignaturaId) };
+          const update = { $pull: { alumnos: new ObjectId(req.params.id) } };
+          const resultado = await Asignatura.updateOne(filtro, update);
+          console.log(`Asignatura actualizada: ${resultado.modifiedCount} documento(s) modificado(s)`);
+        }
+
+      }
+
+//SI ES PROFESOR O ADMINISTRADOR LOS SACA DE LA ASIGNATURA
+      if(updatedUser.role==1||updatedUser.role==2){
+        updatedUser.asignaturas = [];
+        for (const asignatura of asignaturasNuevasUpdateUser) {
+          const filtro = { _id: new ObjectId(asignatura) };
+          const update = { $pull: { alumnos: new ObjectId(req.params.id) } };
+          const resultado = await Asignatura.updateOne(filtro, update);
+          console.log(`Asignatura actualizada: ${resultado.modifiedCount} documento(s) modificado(s)`);
+        }
+      }
+
+      
+      //ACTUALIZA
       const usuario = await User.findByIdAndUpdate(
           req.params.id,
-          updatedUser,  //Le paso los datos actualizados, incluida la contraseña si se cambió
+          updatedUser,
           { new: true }
       );
 

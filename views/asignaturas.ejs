@@ -32,7 +32,7 @@
                             <h5 class="card-title"><%= asignatura.nombre %></h5>
                         </div>
                         <div class="card-body">
-                            <p class="card-text"><strong>Curso:</strong> 1° de Bachillerato</p>
+                            <p class="card-text"><strong>Curso:</strong> <%=asignatura.curso.name%></p>
                             <p class="card-text"><strong>Profesor: </strong><%= asignatura.profesor %></p>
 
                             <% if (asignatura.alumnos) { %>
