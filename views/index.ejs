@@ -15,6 +15,12 @@
         border-top-left-radius: 0.25rem;
         border-top-right-radius: 0.25rem;
     }
+    h4 {
+        margin: 1.5rem;
+    }
+    #mondongo-img {
+        max-width: 300px;
+    }
 </style>
 <%if (user){%>
 <div class="container mt-4">
@@ -37,5 +43,11 @@
         <% }) %>
     </div>
 </div>
+<%}else{%>
+    <div class="container mt-4 text-center">
+        <h1 class="text-center">Bienvenido a Toad Mafia</h1>
+        <h4 class="text-center">Inicie sesión o regístrese para empezar.</h4>
+        <img src="../public/resources/mondongo.jpg" class="img-fluid d-block mx-auto" id="mondongo-img" alt="Foto inicio">
+    </div>
 <%}%>
 <%- include('partials/_footer') %>
