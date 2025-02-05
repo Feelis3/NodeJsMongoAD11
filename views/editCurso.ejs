@@ -1,0 +1,25 @@
+<%- include('partials/_header') %>  <!--Prueba Página-->
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">Edita Curso</h2>
+        <form action="/cursos/edit/<%= curso._id %>" method="POST">
+            <div class="mb-3">
+                <label for="name" class="form-label">Nombre:</label>
+                <input type="text" id="name" name="name" class="form-control" value="<%= curso.name %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="year" class="form-label">Año:</label>
+                <input type="number" id="year" name="year" class="form-control" value="<%= curso.year %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo:</label>
+                <select name="tipo" id="tipo" class="form-select">
+                    <option value="Grado" <%= curso.tipo === 'Grado' ? 'selected' : '' %>>Grado</option>
+                    <option value="Master" <%= curso.tipo === 'Master' ? 'selected' : '' %>>Master</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
+        </form>
+    </div>
+</div>
+<%- include('partials/_footer') %>
