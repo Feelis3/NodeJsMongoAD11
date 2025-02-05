@@ -197,10 +197,10 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
 
 
       //QUITAR DE LAS LISTAS DE ASIGNATURA Y AÑADIR A LISTA DE ASIGNATURA EL USUARIO
+      //ESTAS VARIABLES SE ASEGURAN QUE LE LLEGUE COMO ARRAY
       const asignaturasAntiguaUpdateUser = Array.isArray(req.body.asignaturas)
           ? req.body.asignaturas
           : [req.body.asignaturas];
-
       const asignaturasNuevasUpdateUser= Array.isArray(updatedUser.asignaturas)
           ? updatedUser.asignaturas
           : [updatedUser.asignaturas];
