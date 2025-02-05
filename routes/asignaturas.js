@@ -3,7 +3,10 @@ const router = express.Router();
 const Usuario = require('../models/user');
 const passport = require("passport");
 const Asignaturas = require("../models/asignatura");
+const Asignatura = require("../models/asignatura");
 const Curso = require("../models/Curso");
+const Cursos = require("../models/Curso");
+
 
 
 router.get('/asignaturas',isAuthenticated, async (req, res) => {
@@ -78,9 +81,35 @@ router.get('/asignaturasAdmin', isAuthenticated, async (req, res, next) => {
 
 //(Administrador) Crear Asignatura
 //(addasignaturas)
-router.get('/asignaturas/addasignaturas', isAuthenticated, (req, res) => {
+router.get('/asignaturas/addasignaturas', isAuthenticated, async (req, res) => {
     if (req.user.role === 2){
-        res.render('addasignaturas'); //Redirige a la página donde se crean las asignaturas
+        const cursos = await Cursos.find();
+        res.render('addasignaturas', {
+            cursos
+        }); //Redirige a la página donde se crean las asignaturas
+    } else {
+        res.redirect('/');
+    }
+})
+
+//Procesar la creación de Asignaturas
+router.post('/asignaturas/add', isAuthenticated, async (req, res) => {
+    if (req.user.role === 2){
+        try{
+
+            const newAsignatura = new Asignatura({
+                nombre: req.body.nombre,
+                curso: req.body.curso,
+                alumnos: [],
+                profesor: ''
+            })
+
+            await newAsignatura.save(); //Guardo el Curso en la base de datos
+            res.redirect('/asignaturasAdmin'); //Redirige al listado de cursos
+        }catch (error){
+            console.error('Error al crear la asignatura:', error.message);
+            res.status(500).send("Error al crear la asignatura");
+        }
     } else {
         res.redirect('/');
     }
