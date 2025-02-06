@@ -1,5 +1,9 @@
 <%- include('partials/_header') %> <!--Prueba página-->
-
+<style>
+    a {
+        background-color: #212529;
+    }
+</style>
 <div class="container mt-4">
     <h1 class="mb-3">Lista de Usuarios</h1>
     <table class="table table-striped table-bordered table-hover">
@@ -19,9 +23,9 @@
                     <td><%= usuario.email %></td>
                     <td><%= usuario.role %></td>
                     <td>
-                        <a href="/usuarios/editusuarios/<%= usuario._id %>" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="/usuarios/editusuarios/<%= usuario._id %>" class="btn btn-sm btn-dark">Editar</a>
                         <form action="/usuarios/delete/<%= usuario._id %>" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            <button type="submit" class="btn btn-sm btn-secondary">Eliminar</button>
                         </form>
                     </td>
                 </tr>
@@ -40,7 +44,7 @@
     <%if (editUser) {%>
         <p style="color:#FF0000;"><%= editUser %></p>
     <% } %>
-    <a href="/usuarios/addusuarios" class="btn btn-primary">Crear Usuario</a>
+    <a href="/usuarios/addusuarios" class="btn btn-dark">Crear Usuario</a>
 </div>
 
 
