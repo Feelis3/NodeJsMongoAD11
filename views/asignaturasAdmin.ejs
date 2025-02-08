@@ -21,8 +21,9 @@
                     <td><%= tasks.curso.name %></td>
                     <!-- Si despues de borrar todas las asignaturas sin profesor sigue sin cargar esta pagina, eliminar el (.name) de profesor-->
                     <td><%= tasks.profesor.name %></td>
-                    <td></td>
-
+                    <td>
+                        <a href="/asignaturas/editAsignaturas/<%= tasks._id %>" class="btn btn-warning btn-sm">Editar</a>
+                    </td>
                 </tr>
             <% }) %>
         <% } else { %>

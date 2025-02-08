@@ -56,22 +56,16 @@ function isAuthenticated(req, res, next) {
 router.get('/asignaturasAdmin', isAuthenticated, async (req, res, next) => {
     if (req.user.role === 2){
         try {
-            const asignaturas = await Asignaturas.find();
+            // Poblar las referencias de curso
+            const asignaturas = await Asignaturas.find()
+                .populate('curso', 'name')  // Poblar solo el campo 'name' del curso
+                .populate('profesor', 'name');  // También poblar el nombre del profesor si es necesario
 
-            for (const asig of asignaturas){
-                const asigId = asig.curso.toHexString();
-                const cursoConNombre = await Curso.find({
-                    _id: { $in: asigId} },
-                    "name"
-                );
-                console.log(cursoConNombre)
-                asig.curso = cursoConNombre[0];
-            }
             res.render('asignaturasAdmin', {
                 asignaturas
             });
-        }catch(err){
-            Console.log(err);
+        } catch (err) {
+            console.log(err);
         }
 
     } else {
@@ -124,5 +118,55 @@ router.post('/asignaturas/add', isAuthenticated, async (req, res) => {
         res.redirect('/');
     }
 })
+
+//EDIT
+router.get('/asignaturas/editAsignaturas/:id', isAuthenticated, async (req, res) => {
+    try {
+        if (req.user.role === 2) {
+            const asignatura = await Asignatura.findById(req.params.id);
+            if (!asignatura) return res.status(404).send('Asignatura no encontrada');
+            const cursos = await Cursos.find();
+            const usuar = await Usuario.find();
+            const profesores = [];
+            usuar.forEach((user) => {
+                if (user.role === 1) {
+                    profesores.push(user);
+                }
+            })
+            profesores.forEach(profesore => {
+                console.log(profesore);
+            })
+            res.render('editAsignaturas', {
+                cursos, profesores, asignatura
+            });
+        }
+    } catch (error) {
+        console.error("Error al obtener la asignatura:", error);
+        res.status(500).send('Error al cargar la página de edición');
+    }
+});
+
+router.post('/asignaturas/edit/:id', isAuthenticated, async (req, res) => {
+    if (req.user.role === 2) {
+        try {
+            const { nombre, profesor, curso} = req.body; //Obtengo los datos del formulario
+            let updatedAsignatura = { nombre, profesor, curso};
+
+            const asignatura = await Asignatura.findByIdAndUpdate(
+                req.params.id,
+                updatedAsignatura,  //Le paso los datos actualizados, incluida la contraseña si se cambió
+                { new: true }
+            );
+
+
+            res.redirect('/asignaturasAdmin');
+        } catch (error) {
+            console.error("Error al actualizar la asignatura:", error);
+            res.status(500).send('Error al actualizar la asignatura');
+        }
+    } else {
+        return res.redirect('/');
+    }
+});
 
 module.exports = router;
