@@ -190,7 +190,20 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
       //COMPRUEBA QUE EL CORREO AL EDITAR ES DIFERENTE A UNO EQUE EXISTE Y NO SALTE ERROR SI EL QUE EXISTE ES EL ANTIGUO
       const existingUser = await User.findOne({ email });
       const antiguoEmail = await User.findById(req.params.id);
+      let tieneAsignatura = false;
+      if(antiguoEmail.role === 1&&updatedUser.role !=1){
+        const asignaturas = await Asignatura.find();
+        const resultado = Array.isArray(asignaturas) ? asignaturas : [asignaturas];
+        tieneAsignatura = asignaturas.some(asignatura =>
+            asignatura.profesor.some(profesor => profesor === updateUser._id)
+        );
 
+        if(tieneAsignatura){
+          req.flash('editUser', 'El usuario enseña asignaturas, no se puede modificar.');
+          return res.redirect('/usuarios');
+        }
+
+      }
       if (existingUser && existingUser.email !== antiguoEmail.email ) {
         req.flash('editUser', 'The Email is already Taken.');
         return res.redirect('/usuarios'); // Redirige con un mensaje de error
