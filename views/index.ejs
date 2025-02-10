@@ -1,19 +1,20 @@
 <%- include('partials/_header') %>
 <style>
-    .header-footer {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 0;
+    .card {
+        border-color: #212529;
+        border-radius: 0.25rem;
+        background-color: #212529;
     }
     .card-body {
-        background-color: #f8f9fa;
+        background-color: #2c3034;
+        color: white;
+        border-color: #212529;
     }
     .card-header {
-        background-color: #28a745;
+        background-color: #212529;
         color: white;
         padding: 10px;
-        border-top-left-radius: 0.25rem;
-        border-top-right-radius: 0.25rem;
+        border-color: #212529;
     }
     h4 {
         margin: 1.5rem;
@@ -23,26 +24,31 @@
     }
 </style>
 <%if (user){%>
-<div class="container mt-4">
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        <!-- Tarjeta 1 -->
-
-        <% tasks.forEach(function(asignatura) { %>
-        <%console.log(asignatura)%>
-        <div class="col">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title"><%= asignatura.nombre %></h5>
+    <%if (user.role === 0){%>
+        <div class="container mt-4">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <!-- Tarjeta 1 -->
+                <% tasks.forEach(function(asignatura) { %>
+                <%console.log(asignatura)%>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title"><%= asignatura.nombre %></h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Curso:</strong> <%=asignatura.curso.name%></p>
+                            <p class="card-text"><strong>Profesor: </strong><%= asignatura.profesor %></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="card-text"><strong>Curso:</strong> <%=asignatura.curso.name%></p>
-                    <p class="card-text"><strong>Profesor: </strong><%= asignatura.profesor %></p>
-                </div>
+                <% }) %>
             </div>
         </div>
-        <% }) %>
-    </div>
-</div>
+    <%} else if (user.role === 1){%>
+
+    <%} else{%>
+
+    <%}%>
 <%}else{%>
     <div class="container mt-4 text-center">
         <div style="margin: 10rem">
