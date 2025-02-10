@@ -190,7 +190,25 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
       //COMPRUEBA QUE EL CORREO AL EDITAR ES DIFERENTE A UNO EQUE EXISTE Y NO SALTE ERROR SI EL QUE EXISTE ES EL ANTIGUO
       const existingUser = await User.findOne({ email });
       const antiguoEmail = await User.findById(req.params.id);
+      let tieneAsignatura = false;
+      if(antiguoEmail.role === 1&&updatedUser.role !=1){
+        const asignaturas = await Asignatura.find();
+        const resultado = Array.isArray(asignaturas) ? asignaturas : [asignaturas];
+        for (const asignatura of asignaturas) {
+          for(const profesor of asignatura.profesor){
+            if(profesor.toString() === antiguoEmail._id.toString()){
+              tieneAsignatura = true;
+              break;
+            }
+          }
+          if(tieneAsignatura) break;
+        }
+        if(tieneAsignatura){
+          req.flash('editUser', 'El usuario tiene asignaturas, no se puede modificar.');
+          return res.redirect('/usuarios');
+        }
 
+      }
       if (existingUser && existingUser.email !== antiguoEmail.email ) {
         req.flash('editUser', 'The Email is already Taken.');
         return res.redirect('/usuarios'); // Redirige con un mensaje de error
@@ -272,11 +290,42 @@ router.post('/usuarios/delete/:id', isAuthenticated, async (req, res) => {
 
       const userId = req.params.id;
       console.log("ID USUARIO ", userId);
+
+      //COMPROBAR QUE ES PROFESOR
+      const userRole = await User.findById(userId);
+
+      let tieneAsignatura = false;
+      if(userRole.role === 1){
+        const asignaturasProfesor = await Asignatura.find();
+        const resultado = Array.isArray(asignaturasProfesor) ? asignaturasProfesor : [asignaturasProfesor];
+        for (const asignatura of asignaturasProfesor) {
+          for(const profesor of asignatura.profesor){
+            if(profesor.toString() === userRole._id.toString()){
+              tieneAsignatura = true;
+              break;
+            }
+          }
+          if(tieneAsignatura) break;
+        }
+        if(tieneAsignatura){
+          req.flash('editUser', 'El usuario tiene asignaturas, no se puede modificar.');
+          return res.redirect('/usuarios');
+        }
+
+      }
+
       /* OBTENER LAS ASIGNATURAS DEL USUARIO */
       const user = new User();
       const asig = await user.findAsignaturas(userId); // Asegurar await
       console.log("ASIGNATURAS ", asig);
       //SI TIENE ASIGNATURAS BORRA EL USUARIO DE LA LISTA DE USUARIOS DE LA ASIGNATURA
+      if(userRole.role === 1){
+
+        req.flash('editUser', 'El usuario tiene asignaturas, no se puede modificar.');
+        return res.redirect('/usuarios');
+      }
+
+
       if (asig.length > 0) {
         for (const asignatura of asig) {
           console.log("ID ASIGNATURA ", asignatura.toString());
@@ -349,6 +398,52 @@ router.get('/profesores', isAuthenticated, async (req, res) => {
       res.render('profesores', { profesores }); //Renderizo la view y le paso los profesores
     } catch (error) {
       console.error("Error al obtener profesores:", error);
+      res.status(500).send('Error al obtener los profesores');
+    }
+  } else {
+    //res.redirect('/error');
+  }
+});
+
+//Página Alumno
+router.get('/alumnos', isAuthenticated, async (req, res) => {
+
+  if (req.user.role === 2) { //Si es un Admin
+    try {
+      const usuarios = await User.find(); //Obtengo todos los usuarios
+      const alumnos = []; //Array vacio
+      for (let i = 0; i < usuarios.length; i++) {
+        if (usuarios[i].role === 0) { //Si el usuario es un profesor
+          alumnos.push(usuarios[i]); //Le añado a profesores
+        }
+      }
+
+      res.render('alumnos', { alumnos }); //Renderizo la view y le paso los profesores
+    } catch (error) {
+      console.error("Error al obtener alumnos:", error);
+      res.status(500).send('Error al obtener los profesores');
+    }
+  } else {
+    //res.redirect('/error');
+  }
+});
+
+//Página Alumno
+router.get('/administradores', isAuthenticated, async (req, res) => {
+
+  if (req.user.role === 2) { //Si es un Admin
+    try {
+      const usuarios = await User.find(); //Obtengo todos los usuarios
+      const admin = []; //Array vacio
+      for (let i = 0; i < usuarios.length; i++) {
+        if (usuarios[i].role === 2) { //Si el usuario es un profesor
+          admin.push(usuarios[i]); //Le añado a profesores
+        }
+      }
+
+      res.render('administradores', { admin }); //Renderizo la view y le paso los profesores
+    } catch (error) {
+      console.error("Error al obtener administradores:", error);
       res.status(500).send('Error al obtener los profesores');
     }
   } else {
