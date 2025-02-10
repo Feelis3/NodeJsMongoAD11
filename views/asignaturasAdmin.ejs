@@ -19,17 +19,40 @@
                 <tr>
                     <td><%= tasks.nombre %></td>
                     <td><%= tasks.curso.name %></td>
-                    <!-- Si despues de borrar todas las asignaturas sin profesor sigue sin cargar esta pagina, eliminar el (.name) de profesor-->
-                    <td><%= tasks.profesor.name %></td>
+                    <td>
+                        <div id="alumnoContent" style="display: block;">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalProfesor<%= tasks._id %>">
+                                Profesores
+                            </button>
+
+                            <!-- Modal Profesores -->
+                            <div class="modal fade" id="ModalProfesor<%= tasks._id %>" tabindex="-1" aria-labelledby="ModalProfesorLabel<%= tasks._id %>" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="ModalProfesorLabel<%= tasks._id %>">Profesores</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <% tasks.profesor.forEach(function (profesor) { %>
+                                                <div class="form-check form-check-inline">
+                                                    <label class="form-check-label" for="profesor<%= profesor._id %>"><%= profesor.name %></label>
+                                                </div>
+                                            <% }) %>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
                     <td>
                         <a href="/asignaturas/editAsignaturas/<%= tasks._id %>" class="btn btn-warning btn-sm">Editar</a>
                     </td>
                 </tr>
             <% }) %>
-        <% } else { %>
-            <tr>
-                <td colspan="3" class="text-center">No hay asignaturas para mostrar</td>
-            </tr>
         <% } %>
         </tbody>
 
