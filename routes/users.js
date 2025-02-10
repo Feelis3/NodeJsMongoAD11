@@ -194,12 +194,17 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
       if(antiguoEmail.role === 1&&updatedUser.role !=1){
         const asignaturas = await Asignatura.find();
         const resultado = Array.isArray(asignaturas) ? asignaturas : [asignaturas];
-        tieneAsignatura = asignaturas.some(asignatura =>
-            asignatura.profesor.some(profesor => profesor === updateUser._id)
-        );
-
+        for (const asignatura of asignaturas) {
+          for(const profesor of asignatura.profesor){
+            if(profesor.toString() === antiguoEmail._id.toString()){
+              tieneAsignatura = true;
+              break;
+            }
+          }
+          if(tieneAsignatura) break;
+        }
         if(tieneAsignatura){
-          req.flash('editUser', 'El usuario enseña asignaturas, no se puede modificar.');
+          req.flash('editUser', 'El usuario tiene asignaturas, no se puede modificar.');
           return res.redirect('/usuarios');
         }
 
@@ -285,11 +290,42 @@ router.post('/usuarios/delete/:id', isAuthenticated, async (req, res) => {
 
       const userId = req.params.id;
       console.log("ID USUARIO ", userId);
+
+      //COMPROBAR QUE ES PROFESOR
+      const userRole = await User.findById(userId);
+
+      let tieneAsignatura = false;
+      if(userRole.role === 1){
+        const asignaturasProfesor = await Asignatura.find();
+        const resultado = Array.isArray(asignaturasProfesor) ? asignaturasProfesor : [asignaturasProfesor];
+        for (const asignatura of asignaturasProfesor) {
+          for(const profesor of asignatura.profesor){
+            if(profesor.toString() === userRole._id.toString()){
+              tieneAsignatura = true;
+              break;
+            }
+          }
+          if(tieneAsignatura) break;
+        }
+        if(tieneAsignatura){
+          req.flash('editUser', 'El usuario tiene asignaturas, no se puede modificar.');
+          return res.redirect('/usuarios');
+        }
+
+      }
+
       /* OBTENER LAS ASIGNATURAS DEL USUARIO */
       const user = new User();
       const asig = await user.findAsignaturas(userId); // Asegurar await
       console.log("ASIGNATURAS ", asig);
       //SI TIENE ASIGNATURAS BORRA EL USUARIO DE LA LISTA DE USUARIOS DE LA ASIGNATURA
+      if(userRole.role === 1){
+
+        req.flash('editUser', 'El usuario tiene asignaturas, no se puede modificar.');
+        return res.redirect('/usuarios');
+      }
+
+
       if (asig.length > 0) {
         for (const asignatura of asig) {
           console.log("ID ASIGNATURA ", asignatura.toString());
