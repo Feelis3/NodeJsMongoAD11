@@ -356,6 +356,52 @@ router.get('/profesores', isAuthenticated, async (req, res) => {
   }
 });
 
+//Página Alumno
+router.get('/alumnos', isAuthenticated, async (req, res) => {
+
+  if (req.user.role === 2) { //Si es un Admin
+    try {
+      const usuarios = await User.find(); //Obtengo todos los usuarios
+      const alumnos = []; //Array vacio
+      for (let i = 0; i < usuarios.length; i++) {
+        if (usuarios[i].role === 0) { //Si el usuario es un profesor
+          alumnos.push(usuarios[i]); //Le añado a profesores
+        }
+      }
+
+      res.render('alumnos', { alumnos }); //Renderizo la view y le paso los profesores
+    } catch (error) {
+      console.error("Error al obtener alumnos:", error);
+      res.status(500).send('Error al obtener los profesores');
+    }
+  } else {
+    //res.redirect('/error');
+  }
+});
+
+//Página Alumno
+router.get('/administradores', isAuthenticated, async (req, res) => {
+
+  if (req.user.role === 2) { //Si es un Admin
+    try {
+      const usuarios = await User.find(); //Obtengo todos los usuarios
+      const admin = []; //Array vacio
+      for (let i = 0; i < usuarios.length; i++) {
+        if (usuarios[i].role === 2) { //Si el usuario es un profesor
+          admin.push(usuarios[i]); //Le añado a profesores
+        }
+      }
+
+      res.render('administradores', { admin }); //Renderizo la view y le paso los profesores
+    } catch (error) {
+      console.error("Error al obtener administradores:", error);
+      res.status(500).send('Error al obtener los profesores');
+    }
+  } else {
+    //res.redirect('/error');
+  }
+});
+
 
 module.exports = router;
 
