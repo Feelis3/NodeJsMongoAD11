@@ -4,18 +4,71 @@
         <h2 class="text-center mb-4">Crear Asignatura</h2>
         <form action="/asignaturas/add" method="POST">
             <div class="mb-3">
-                <label for="name" class="form-label">Nombre:</label>
-                <input type="text" id="name" name="name" class="form-control" required>
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required>
             </div>
-            <!-- Tengo que hacer curso primero para esto-->
-<!--            <div class="mb-3">-->
-<!--                <label for="role" class="form-label">Rol:</label>-->
-<!--                -->
-<!--                <select name="role" id="role" class="form-select">-->
-<!--                    <option value="0">Grado</option>-->
-<!--                    <option value="1">Master</option>-->
-<!--                </select>-->
-<!--            </div>-->
+
+            <div id="alumnoContent" style="display: block;">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalProfesor">
+                    Profesores
+                </button>
+
+                <!-- Modal Profesores -->
+                <div class="modal fade" id="ModalProfesor" tabindex="-1" aria-labelledby="ModalProfesorLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="ModalProfesorLabel">Profesores</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <% if (profesores) { %>
+                                    <% profesores.forEach(function (profesor) { %>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="profesor" id="curso<%= profesor._id %>" value="<%= profesor._id %>">
+                                            <label class="form-check-label" for="profesor<%= profesor._id %>"><%= profesor.name %></label>
+                                        </div>
+                                <% }) } %>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3"></div>
+
+            <div id="alumnoContent2" style="display: block;">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalCurso">
+                    Cursos
+                </button>
+
+                <!-- Modal Cursos -->
+                <div class="modal fade" id="ModalCurso" tabindex="-1" aria-labelledby="ModalCursoLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="ModalCursoLabel">Cursos</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <% if (cursos) { %>
+                                    <% cursos.forEach(function (curso) { %>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="curso" id="curso<%= curso._id %>" value="<%= curso._id %>">
+                                            <label class="form-check-label" for="curso<%= curso._id %>"><%= curso.name %></label>
+                                        </div>
+                                <% }) } %>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3"></div>
             <button type="submit" class="btn btn-primary w-100">Crear Asignatura</button>
         </form>
     </div>

@@ -58,5 +58,44 @@ router.post('/cursos/add', isAuthenticated, async (req, res) => {
         res.redirect('/');
     }
 })
+//EDIT
+// Ruta para actualizar el usuario **REVISAR ENCRIPTACIÓN**
+router.post('/cursos/edit/:id', isAuthenticated, async (req, res) => {
+    if (req.user.role === 2) {
+        try {
+            const { name, year, tipo} = req.body; //Obtengo los datos del formulario
+            let updatedCurso = { name, year, tipo};
+
+            const curso = await Curso.findByIdAndUpdate(
+                req.params.id,
+                updatedCurso,  //Le paso los datos actualizados, incluida la contraseña si se cambió
+                { new: true }
+            );
+
+
+            res.redirect('/cursosAdmin');
+        } catch (error) {
+            console.error("Error al actualizar el curso:", error);
+            res.status(500).send('Error al actualizar el curso');
+        }
+    } else {
+        return res.redirect('/');
+    }
+});
+
+router.get('/cursos/editCurso/:id', isAuthenticated, async (req, res) => {
+    try {
+        const curso = await Curso.findById(req.params.id);
+        if (!curso) return res.status(404).send('Curso no encontrado');
+
+        res.render('editCurso', { curso });
+    } catch (error) {
+        console.error("Error al obtener el curso:", error);
+        res.status(500).send('Error al cargar la página de edición');
+    }
+});
+//PARA ELIMINAR TENGO QUE SACAR TODOS
+
 
 module.exports = router;
+
