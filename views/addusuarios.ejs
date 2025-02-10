@@ -1,6 +1,54 @@
 <%- include('partials/_header') %>  <!--Prueba Página-->
+<style>
+    .la-carta{
+        background-color: #212529;
+        color: white;
+    }
+    .form-control {
+        background-color: #2c3034;
+        color: white;
+        border: 1px solid #555;
+    }
+    .form-control::placeholder {
+        color: darkgrey;
+    }
+    .form-control:focus {
+        background-color: #1f2225;
+        color: white;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    /* Quitar los botones de incremento/decremento en Chrome, Safari y Edge */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    /* Quitar los botones en Firefox */
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+    .modal-content {
+        background-color: #2c3034;
+        border: none;
+    }
+    .modal-header, .modal-footer {
+        border: none;
+    }
+    .form-select {
+        background-color: #2c3034;
+        color: white;
+        border-color: #555;
+    }
+    .form-select:focus {
+        background-color: #1f2225;
+        color: white;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+</style>
 <div class="container mt-5">
-    <div class="card shadow-lg p-4">
+    <div class="card shadow-lg p-4 la-carta">
         <h2 class="text-center mb-4">Crear Usuario</h2>
         <form action="/usuarios/add" method="POST">
             <div class="mb-3">
@@ -74,7 +122,7 @@
                                 <% })} %>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
