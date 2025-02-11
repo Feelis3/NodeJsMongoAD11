@@ -77,6 +77,7 @@ router.get('/asignaturasAdmin', isAuthenticated, async (req, res, next) => {
                 .populate('curso', 'name')  // Poblar solo el campo 'name' del curso
                 .populate('profesor', 'name');  // También poblar el nombre del profesor si es necesario
 
+
             res.render('asignaturasAdmin', {
                 asignaturas
             });
@@ -101,6 +102,7 @@ router.get('/asignaturas/addasignaturas', isAuthenticated, async (req, res) => {
                 profesores.push(user);
             }
         })
+
         profesores.forEach(profesore => {
             console.log(profesore);
         })
@@ -116,7 +118,6 @@ router.get('/asignaturas/addasignaturas', isAuthenticated, async (req, res) => {
 router.post('/asignaturas/add', isAuthenticated, async (req, res) => {
     if (req.user.role === 2){
         try{
-
             const newAsignatura = new Asignatura({
                 nombre: req.body.nombre,
                 curso: req.body.curso,
@@ -127,8 +128,8 @@ router.post('/asignaturas/add', isAuthenticated, async (req, res) => {
             await newAsignatura.save(); //Guardo el Curso en la base de datos
             res.redirect('/asignaturasAdmin'); //Redirige al listado de cursos
         }catch (error){
-            console.error('Error al crear la asignatura:', error.message);
-            res.status(500).send("Error al crear la asignatura");
+            req.flash('errorAsignatura', 'No hay curso selecionado.');
+            return res.redirect('/asignaturasAdmin'); // Redirige con un mensaje de error
         }
     } else {
         res.redirect('/');

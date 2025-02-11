@@ -65,6 +65,9 @@
         </tbody>
 
     </table>
+    <%if (errorAsignatura) {%>
+        <p style="color:#FF0000;"><%= errorAsignatura %></p>
+    <% } %>
     <a href="/asignaturas/addasignaturas" class="btn btn-dark">Crear Asignatura</a>
 </div>
 
