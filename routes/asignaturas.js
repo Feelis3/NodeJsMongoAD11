@@ -12,34 +12,50 @@ const Cursos = require("../models/Curso");
 router.get('/asignaturas',isAuthenticated, async (req, res) => {
     const user = new Usuario();
     const tasks = await user.findAsignaturas(req.user._id);
+    const asignaturasUsuario= [];
     //Nombre del curso
     for (const asig of tasks){
         const asigId = asig.curso.toHexString();
+
+        //Nombre curso
         const cursoConNombre = await Curso.find({
                 _id: { $in: asigId} },
             "name"
         );
-        console.log("CURSO :..",cursoConNombre)
         asig.curso = cursoConNombre[0];
-    }
-    //Nombre de la asignatura
-    for (const asignatura of tasks) {
-        console.log(asignatura.alumnos);
 
+        //Profesores nombres
+
+        const profesores =  asig.profesor;
+        const nombresProfesores = [];
+        for (let i = 0;i<profesores.length; i++){
+            const profe = await Usuario.findById(profesores[i].toString());
+            nombresProfesores.push(profe.name);
+        }
+
+        //Alumnos
         // Convertir los IDs en strings
-        const alumnosIds = asignatura.alumnos.map(id => id.toHexString());
+        const alumnosIds = asig.alumnos.map(id => id.toHexString());
 
         // Obtener todos los alumnos con `name` y `lastname`
         const alumnosConNombres = await Usuario.find(
             { _id: { $in: alumnosIds } },
             "name lastName" // <-- Aquí agregamos lastname
         );
-        console.log(alumnosConNombres);
 
-        asignatura.alumnos = alumnosConNombres;
+        const asignaturaNueva = {
+            name: asig.nombre,
+            curso: asig.curso,
+            alumnos: alumnosConNombres,
+            profesores: nombresProfesores
+        }
+        asignaturasUsuario.push(asignaturaNueva);
+
+
     }
+
     res.render('asignaturas', {
-        tasks
+        asignaturasUsuario
     });
 });
 
