@@ -20,6 +20,8 @@ router.get('/', async (req, res, next) => {
     console.log("Usuario autenticado"); // Log para saber si entra en el if
     const user = new Usuario();
     const tasks = await user.findAsignaturas(req.user._id);
+    const asignaturasUsuario= [];
+
     //Consigue el nombre del curso
     for (const asig of tasks){
       const asigId = asig.curso.toHexString();
@@ -27,10 +29,27 @@ router.get('/', async (req, res, next) => {
             _id: { $in: asigId} },
           "name"
       );
-      console.log("CURSO :..",cursoConNombre)
+
+      //Profesores
+      const profesores =  asig.profesor;
+      const nombresProfesores = [];
+      for (let i = 0;i<profesores.length; i++){
+        const profe = await Usuario.findById(profesores[i].toString());
+        nombresProfesores.push(profe.name);
+      }
+
       asig.curso = cursoConNombre[0];
+
+      const asignaturaNueva = {
+        name: asig.nombre,
+        curso: asig.curso,
+        profesores: nombresProfesores
+      }
+      asignaturasUsuario.push(asignaturaNueva);
+
+
     }
-    res.render('index', { tasks });
+    res.render('index', { asignaturasUsuario });
   } else {
     console.log("Usuario no autenticado"); // Log para saber si entra en el else
     res.render('index'); // Si no está autenticado, solo renderiza la página sin las asignaturas
@@ -74,8 +93,37 @@ router.post('/signup', passport.authenticate('local-signup', {
 router.get('/profile',isAuthenticated , async (req, res, next) => {
   const user = new Usuario();
   const tasks = await user.findAsignaturas(req.user._id);
+
+  const asignaturasUsuario= [];
+
+  //Consigue el nombre del curso
+  for (const asig of tasks){
+    const asigId = asig.curso.toHexString();
+    const cursoConNombre = await Curso.find({
+          _id: { $in: asigId} },
+        "name"
+    );
+
+    //Profesores
+    const profesores =  asig.profesor;
+    const nombresProfesores = [];
+    for (let i = 0;i<profesores.length; i++){
+      const profe = await Usuario.findById(profesores[i].toString());
+      nombresProfesores.push(profe.name);
+    }
+
+    asig.curso = cursoConNombre[0];
+
+    const asignaturaNueva = {
+      name: asig.nombre,
+      curso: asig.curso,
+      profesores: nombresProfesores
+    }
+    asignaturasUsuario.push(asignaturaNueva);
+  }
+
   res.render('profile', {
-    tasks
+    asignaturasUsuario
   });
 });
 

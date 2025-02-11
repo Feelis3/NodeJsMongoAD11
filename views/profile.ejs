@@ -29,22 +29,28 @@
             <p><strong>Edad:</strong> <span id="user-age"><%=user.age%></span> años</p>
         </div>
         <hr class="my-4">
+        <%if(asignaturasUsuario){%>
         <div class="asignaturas">
             <h4 class="text-center mb-3">Asignaturas</h4>
             <div class="accordion accordion-flush" id="accordionFlushExample">
-                <% tasks.forEach(function(asignatura, index) { %>
+                <% asignaturasUsuario.forEach(function(asignatura, index) { %>
                     <div class="accordion-item" style="background-color: #212529">
                         <h2 class="accordion-header" style="margin: 0">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse<%= index %>" aria-expanded="false" aria-controls="flush-collapse<%= index %>">
-                                <%= asignatura.nombre %>
+                                <%= asignatura.name %>
                             </button>
                         </h2>
                         <div id="flush-collapse<%= index %>" class="accordion-collapse collapse contenido-asignatura" data-bs-parent="#accordionFlushExample" style="margin: 0">
                             <div class="accordion-body">
-                                Contenido de la asignatura <strong><%= asignatura.nombre %></strong>.
+                                Contenido de la asignatura <strong><%= asignatura.name %></strong>.
                             </div>
                             <div class="accordion-body">
-                                Profesor de la asignatura <strong><%= asignatura.profesor %></strong>.
+                                Profesores:
+                                <ul>
+                                    <%asignatura.profesores.forEach(profesor=>{%>
+                                        <li><%=profesor%></li>
+                                    <%})%>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -52,7 +58,7 @@
             </div>
 
         </div>
-
+        <%}%>
     </div>
 </div>
 
