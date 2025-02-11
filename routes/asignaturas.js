@@ -12,34 +12,50 @@ const Cursos = require("../models/Curso");
 router.get('/asignaturas',isAuthenticated, async (req, res) => {
     const user = new Usuario();
     const tasks = await user.findAsignaturas(req.user._id);
+    const asignaturasUsuario= [];
     //Nombre del curso
     for (const asig of tasks){
         const asigId = asig.curso.toHexString();
+
+        //Nombre curso
         const cursoConNombre = await Curso.find({
                 _id: { $in: asigId} },
             "name"
         );
-        console.log("CURSO :..",cursoConNombre)
         asig.curso = cursoConNombre[0];
-    }
-    //Nombre de la asignatura
-    for (const asignatura of tasks) {
-        console.log(asignatura.alumnos);
 
+        //Profesores nombres
+
+        const profesores =  asig.profesor;
+        const nombresProfesores = [];
+        for (let i = 0;i<profesores.length; i++){
+            const profe = await Usuario.findById(profesores[i].toString());
+            nombresProfesores.push(profe.name);
+        }
+
+        //Alumnos
         // Convertir los IDs en strings
-        const alumnosIds = asignatura.alumnos.map(id => id.toHexString());
+        const alumnosIds = asig.alumnos.map(id => id.toHexString());
 
         // Obtener todos los alumnos con `name` y `lastname`
         const alumnosConNombres = await Usuario.find(
             { _id: { $in: alumnosIds } },
             "name lastName" // <-- Aquí agregamos lastname
         );
-        console.log(alumnosConNombres);
 
-        asignatura.alumnos = alumnosConNombres;
+        const asignaturaNueva = {
+            name: asig.nombre,
+            curso: asig.curso,
+            alumnos: alumnosConNombres,
+            profesores: nombresProfesores
+        }
+        asignaturasUsuario.push(asignaturaNueva);
+
+
     }
+
     res.render('asignaturas', {
-        tasks
+        asignaturasUsuario
     });
 });
 
@@ -60,6 +76,7 @@ router.get('/asignaturasAdmin', isAuthenticated, async (req, res, next) => {
             const asignaturas = await Asignaturas.find()
                 .populate('curso', 'name')  // Poblar solo el campo 'name' del curso
                 .populate('profesor', 'name');  // También poblar el nombre del profesor si es necesario
+
 
             res.render('asignaturasAdmin', {
                 asignaturas
@@ -85,6 +102,7 @@ router.get('/asignaturas/addasignaturas', isAuthenticated, async (req, res) => {
                 profesores.push(user);
             }
         })
+
         profesores.forEach(profesore => {
             console.log(profesore);
         })
@@ -100,7 +118,6 @@ router.get('/asignaturas/addasignaturas', isAuthenticated, async (req, res) => {
 router.post('/asignaturas/add', isAuthenticated, async (req, res) => {
     if (req.user.role === 2){
         try{
-
             const newAsignatura = new Asignatura({
                 nombre: req.body.nombre,
                 curso: req.body.curso,
@@ -111,8 +128,8 @@ router.post('/asignaturas/add', isAuthenticated, async (req, res) => {
             await newAsignatura.save(); //Guardo el Curso en la base de datos
             res.redirect('/asignaturasAdmin'); //Redirige al listado de cursos
         }catch (error){
-            console.error('Error al crear la asignatura:', error.message);
-            res.status(500).send("Error al crear la asignatura");
+            req.flash('errorAsignatura', 'No hay curso selecionado.');
+            return res.redirect('/asignaturasAdmin'); // Redirige con un mensaje de error
         }
     } else {
         res.redirect('/');

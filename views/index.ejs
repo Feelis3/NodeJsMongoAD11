@@ -28,7 +28,7 @@
         <div class="container mt-4">
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <!-- Tarjeta 1 -->
-                <% tasks.forEach(function(asignatura) { %>
+                <% asignaturasUsuario.forEach(function(asignatura) { %>
                 <%console.log(asignatura)%>
                 <div class="col">
                     <div class="card">
@@ -37,7 +37,15 @@
                         </div>
                         <div class="card-body">
                             <p class="card-text"><strong>Curso:</strong> <%=asignatura.curso.name%></p>
-                            <p class="card-text"><strong>Profesor: </strong><%= asignatura.profesor %></p>
+                            <p class="card-text"><strong>Profesores: </strong></p>
+                            <% if (asignatura.profesores) { %>
+                            <p>Profesores:</p>
+                            <ul>
+                                <%asignatura.profesores.forEach(profesor=>{%>
+                                    <li><%= profesor %></li>
+                                <%})%>
+                            </ul>
+                            <% } %>
                         </div>
                     </div>
                 </div>
