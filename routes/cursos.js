@@ -5,6 +5,8 @@ const Usuario = require('../models/user');
 const passport = require("passport");
 const Curso = require("../models/Curso");
 const Cursos = require("../models/Curso");
+const Asignatura = require("../models/asignatura");
+
 
 function isAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
@@ -94,8 +96,48 @@ router.get('/cursos/editCurso/:id', isAuthenticated, async (req, res) => {
         res.status(500).send('Error al cargar la página de edición');
     }
 });
-//PARA ELIMINAR TENGO QUE SACAR TODOS
 
+router.post('/cursos/delete/:id', isAuthenticated, async (req, res) => {
+    if (req.user.role === 2) { // Verificar si el usuario es administrador
+        try {
+            const cursoId = req.params.id;
+            console.log("ID CURSO:", cursoId);
+
+            // 1. Eliminar las asignaturas asociadas al curso
+            const asignaturas = await Asignatura.find();//todas las asignaturas
+            //  Recorrer las asignaturas y eliminar la referencia al curso
+            for (let i = 0; i < asignaturas.length; i++) {
+                const asignatura = asignaturas[i];
+
+                // Verificar si la asignatura está asociada al cursoId
+                if (asignatura.curso && asignatura.curso.toString() === cursoId) {
+                    await Asignatura.findByIdAndUpdate(asignatura.id, {
+                        $set: { profesor: [], alumnos: [] }  // Establecer profesores y alumnos como arrays vacíos
+                    });
+                    console.log(`Asignatura ${asignatura.id} actualizada: profesores y alumnos vacíos.`);
+
+                    // Eliminar la asignatura después de actualizarla
+                    await Asignatura.findByIdAndDelete(asignatura.id); // Eliminar la asignatura de la base de datos
+                    console.log(`Asignatura ${asignatura._id} eliminada porque estaba asociada al curso ${cursoId}`);
+                }
+            }
+
+            // Eliminar el curso
+            const cursoEliminado = await Curso.findByIdAndDelete(cursoId); // Usar el modelo Curso, no User
+            if (!cursoEliminado) {
+                return res.status(404).send('Curso no encontrado'); // Si no existe el curso, devolver error 404
+            }
+            console.log(`Curso ${cursoId} eliminado.`);
+
+            res.redirect('/cursosAdmin'); // Redirigir al listado de cursos
+        } catch (error) {
+            console.error("Error al eliminar el curso:", error);
+            res.status(500).send('Error al eliminar el curso');
+        }
+    } else {
+        return res.redirect('/'); // Si no es administrador, redirigir a la página principal
+    }
+});
 
 module.exports = router;
 
