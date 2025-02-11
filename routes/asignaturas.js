@@ -49,6 +49,7 @@ router.get('/asignaturas',isAuthenticated, async (req, res) => {
             alumnos: alumnosConNombres,
             profesores: nombresProfesores
         }
+
         asignaturasUsuario.push(asignaturaNueva);
 
 
