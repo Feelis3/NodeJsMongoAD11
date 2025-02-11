@@ -111,6 +111,22 @@ router.post('/cursos/delete/:id', isAuthenticated, async (req, res) => {
 
                 // Verificar si la asignatura está asociada al cursoId
                 if (asignatura.curso && asignatura.curso.toString() === cursoId) {
+                    //cambiar que lea todos los usuarios y si alguno tiene el id de la asignatura se ponga a 0
+                    //Cogemos todos los usuarios
+                    const usuarios= await Usuario.find();
+                    //recoorremmos todos los usuarios y eliminamos la asignatura de su lista
+                    for (let j = 0; j < usuarios.length; j++) {
+                        const usuario = usuarios[j];
+
+                            // Eliminar la asignatura del array de asignaturas del usuario
+                            await Usuario.findByIdAndUpdate(usuario._id, {
+                                $pull: { asignaturas: asignatura.id }
+                            });
+                            console.log(`Asignatura ${asignatura.id} eliminada del usuario ${usuario._id}`);
+
+
+                    }
+
                     await Asignatura.findByIdAndUpdate(asignatura.id, {
                         $set: { profesor: [], alumnos: [] }  // Establecer profesores y alumnos como arrays vacíos
                     });
