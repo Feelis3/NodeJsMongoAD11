@@ -366,14 +366,8 @@ router.post('/usuarios/delete/:id', isAuthenticated, async (req, res) => {
       const user = new User();
       const asig = await user.findAsignaturas(userId); // Asegurar await
       console.log("ASIGNATURAS ", asig);
+
       //SI TIENE ASIGNATURAS BORRA EL USUARIO DE LA LISTA DE USUARIOS DE LA ASIGNATURA
-      if(userRole.role === 1){
-
-        req.flash('editUser', 'El usuario tiene asignaturas, no se puede modificar.');
-        return res.redirect('/usuarios');
-      }
-
-
       if (asig.length > 0) {
         for (const asignatura of asig) {
           console.log("ID ASIGNATURA ", asignatura.toString());
