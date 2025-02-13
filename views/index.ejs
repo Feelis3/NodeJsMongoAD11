@@ -22,6 +22,10 @@
     #mondongo-img {
         max-width: 450px;
     }
+    .titulo-asig {
+        color: white;
+        text-decoration: none;
+    }
 </style>
 <%if (user){%>
     <%if (user.role === 0){%>
@@ -33,7 +37,7 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title"><%= asignatura.name %></h5>
+                            <a href="/asignaturas/softwares/<%= asignatura.id %>" class="titulo-asig"><h5 class="card-title"><%= asignatura.name %></h5></a>
                         </div>
                         <div class="card-body">
                             <p class="card-text"><strong>Curso:</strong> <%=asignatura.curso.name%></p>

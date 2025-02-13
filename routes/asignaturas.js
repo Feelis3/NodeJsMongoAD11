@@ -11,9 +11,21 @@ const Cursos = require("../models/Curso");
 
 router.get('/asignaturas',isAuthenticated, async (req, res) => {
     const user = new Usuario();
-    const tasks = await user.findAsignaturas(req.user._id);
+    const usuario = await Usuario.findById(req.user._id);
+    var tasks = [];
     const asignaturasUsuario= [];
-    //Nombre del curso
+    if (usuario.role === 0){
+        tasks = await user.findAsignaturas(req.user._id);
+    }else if (usuario.role === 1){
+        const allAsignaturas = await Asignatura.find();
+        for (const asig of allAsignaturas){
+            console.log(asig);
+            if (asig.profesor.includes(req.user._id)){
+                tasks.push(asig);
+            }
+        }
+    }
+    //Bucle para formatear los nombres de las asignaturas y profesores
     for (const asig of tasks){
         const asigId = asig.curso.toHexString();
 
@@ -25,7 +37,6 @@ router.get('/asignaturas',isAuthenticated, async (req, res) => {
         asig.curso = cursoConNombre[0];
 
         //Profesores nombres
-
         const profesores =  asig.profesor;
         const nombresProfesores = [];
         for (let i = 0;i<profesores.length; i++){
@@ -44,6 +55,7 @@ router.get('/asignaturas',isAuthenticated, async (req, res) => {
         );
 
         const asignaturaNueva = {
+            id: asig._id,
             name: asig.nombre,
             curso: asig.curso,
             alumnos: alumnosConNombres,
