@@ -205,4 +205,47 @@ router.post('/asignaturas/edit/:id', isAuthenticated, async (req, res) => {
     }
 });
 
+router.post('/asignaturas/delete/:id', isAuthenticated, async (req, res) => {
+    if (req.user.role === 2) { // Verificar si el usuario es administrador
+        try {
+            const asignaturaID = req.params.id;
+            console.log("ID Asignatura:", asignaturaID);
+
+            // Obtener todos los usuarios
+            const usuarios = await Usuario.find();
+
+            // Recorrer todos los usuarios y eliminar la asignatura de su lista
+            for (let i = 0; i < usuarios.length; i++) {
+                const usuario = usuarios[i];
+
+                // Verificar si el usuario tiene esta asignatura en su array
+                if (usuario.asignaturas && usuario.asignaturas.some(asigId => asigId.toString() === asignaturaID)) {
+                    await Usuario.findByIdAndUpdate(usuario._id, {
+                        $pull: { asignaturas: asignaturaID }
+                    });
+                    console.log(`Asignatura ${asignaturaID} eliminada del usuario ${usuario._id}`);
+                }
+            }
+
+            // Vaciar profesores y alumnos de la asignatura antes de eliminarla
+            await Asignatura.findByIdAndUpdate(asignaturaID, {
+                $set: { profesor: [], alumnos: [] }
+            });
+            console.log(`Asignatura ${asignaturaID} actualizada: profesores y alumnos vacíos.`);
+
+            // Eliminar la asignatura después de actualizarla
+            await Asignatura.findByIdAndDelete(asignaturaID);
+            console.log(`Asignatura ${asignaturaID} eliminada correctamente.`);
+
+            res.redirect('/asignaturasAdmin'); // Redirigir al listado de asignaturas
+        } catch (error) {
+            console.error("Error al eliminar la asignatura:", error);
+            res.status(500).send('Error al eliminar la asignatura');
+        }
+    } else {
+        return res.redirect('/'); // Si no es administrador, redirigir a la página principal
+    }
+});
+
+
 module.exports = router;
