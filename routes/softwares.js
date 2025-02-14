@@ -31,22 +31,6 @@ router.get('/asignaturas/softwares/:id', isAuthenticated, async (req, res) => {
     }
 })
 
-router.get('/asignaturas/softwares/editSoftware/:id', isAuthenticated, async (req, res) => {
-    if (req.user.role >= 1){
-        try {
-            const software = await Software.findById(req.params.id);
-            res.render('editSoftware', {
-                software
-            });
-        } catch (error) {
-            console.error("Error al obtener el software:", error);
-            res.status(500).send('Error al cargar la página de edición del software');
-        }
-    }else {
-        return res.redirect('/');
-    }
-})
-
 router.post('/asignaturas/softwares/edit/:id', isAuthenticated, async (req, res) => {
     if (req.user.role >= 1){
         try {
@@ -89,8 +73,10 @@ router.post('/asignaturas/softwares/:id/add', isAuthenticated, async (req, res) 
 router.post('/asignaturas/softwares/delete/:id', isAuthenticated, async (req, res) => {
     if (req.user.role >= 1){
         try {
+            const software = await Software.findById(req.params.id);
+            const idAsignatura = software.asignatura;
             await Software.findByIdAndDelete(req.params.id);
-            res.redirect('/asignaturas');
+            res.redirect('/asignaturas/softwares/' + idAsignatura);
         } catch (error) {
             console.error("Error al eliminar el software:", error);
             res.status(500).send('Error al eliminar el software');

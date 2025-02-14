@@ -41,11 +41,15 @@
     <% if (user && user.role >= 1) { %>
         <!-- Barra lateral izquierda -->
         <aside class="col-md-3 col-lg-2 p-3 d-flex flex-column justify-content-center">
-            <a class="btn btn-dark" style="margin: 10px 0">Editar Asignatura</a>
+            <!--Muestro la opción de editar la asignatura solo si es profesor ya que el admin puede editar desde la vista de todas las asignaturas-->
+            <%if (user.role === 1) {%>
+                <a href="/asignaturas/editAsignaturas/<%= asignatura.id%>" class="btn btn-dark" style="margin: 10px 0">Editar Asignatura</a>
+            <%} %>
             <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#ModalAdd">Añadir Software</button>
         </aside>
     <% } %>
 
+    <!--MODAL AÑADIR SOFTWARE-->
     <div class="modal fade" id="ModalAdd" tabindex="-1" aria-labelledby="ModalAddLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -60,7 +64,7 @@
                             <input type="text" id="descripcion" name="descripcion" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="direccion" class="form-label">Dirección:</label>
+                            <label for="direccion" class="form-label">Url:</label>
                             <input type="text" id="direccion" name="direccion" class="form-control" required>
                         </div>
                         <button type="submit" class="btn btn-dark w-100">Guardar Cambios</button>
@@ -88,7 +92,38 @@
                                 </div>
                                 <% if (user && user.role >= 1) { %>
                                     <div class="card-footer bg-dark">
-                                        <a href="#" class="btn btn-outline-light">Eliminar</a>
+                                        <!--BOTÓN EDITAR-->
+                                        <button type="button" class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#ModalEdit">Editar</button>
+
+                                        <!--MODAL EDITAR SOFTWARE-->
+                                        <div class="modal fade" id="ModalEdit" tabindex="-1" aria-labelledby="ModalEditLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="ModalEditLabel">Editar Software</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancelar"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="/asignaturas/softwares/edit/<%= software.id%>" method="POST">
+                                                            <div class="mb-3">
+                                                                <label for="descripcion" class="form-label">Descripción:</label>
+                                                                <input type="text" id="descripcion" name="descripcion" class="form-control" required value="<%= software.descripcion %>">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="direccion" class="form-label">Url:</label>
+                                                                <input type="text" id="direccion" name="direccion" class="form-control" required value="<%= software.direccion %>">
+                                                            </div>
+                                                            <button type="submit" class="btn btn-dark w-100">Guardar Cambios</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Botón eliminar-->
+                                        <form action="/asignaturas/softwares/delete/<%= software._id %>" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-light btn-sm">Eliminar</button>
+                                        </form>
                                     </div>
                                 <% } %>
                             </div>

@@ -177,7 +177,8 @@ router.get('/asignaturas/editAsignaturas/:id', isAuthenticated, async (req, res)
 });
 
 router.post('/asignaturas/edit/:id', isAuthenticated, async (req, res) => {
-    if (req.user.role === 2) {
+    //Cambio el if para que puedan actualizar también profesores
+    if (req.user.role >= 1) {
         try {
             const { nombre, profesor, curso} = req.body; //Obtengo los datos del formulario
             let updatedAsignatura = { nombre, profesor, curso};
@@ -188,8 +189,12 @@ router.post('/asignaturas/edit/:id', isAuthenticated, async (req, res) => {
                 { new: true }
             );
 
-
-            res.redirect('/asignaturasAdmin');
+            //Al terminar de editar compruebo si es profesor o admin para redirigir a asignaturasAdmin o al contenido de la asignatura
+            if (user.role === 1){
+                res.redirect("asignaturas/softwares/" + req.params.id);
+            } else {
+                res.redirect('/asignaturasAdmin');
+            }
         } catch (error) {
             console.error("Error al actualizar la asignatura:", error);
             res.status(500).send('Error al actualizar la asignatura');
