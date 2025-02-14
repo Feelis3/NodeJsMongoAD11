@@ -55,15 +55,17 @@
                 <input type="text" id="nombre" name="nombre" class="form-control" value="<%= asignatura.nombre %>" required>
             </div>
 
-            <!--Botones de los modales-->
-            <div class="botones-horizontales mb-3">
-                <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#ModalProfesor">
-                    Profesores
-                </button>
-                <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#ModalCurso">
-                    Cursos
-                </button>
-            </div>
+            <%if (user.role === 2){%>
+                <!--Botones de los modales-->
+                <div class="botones-horizontales mb-3">
+                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#ModalProfesor">
+                        Profesores
+                    </button>
+                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#ModalCurso">
+                        Cursos
+                    </button>
+                </div>
+            <%} %>
 
             <!-- Modal Profesores -->
             <div class="modal fade" id="ModalProfesor" tabindex="-1" aria-labelledby="ModalProfesorLabel" aria-hidden="true">
