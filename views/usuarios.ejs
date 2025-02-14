@@ -1,10 +1,17 @@
 <%- include('partials/_header') %> <!--Prueba página-->
-
+<style>
+    .btn_dark {
+        background-color: #313338;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+</style>
 <div class="container mt-4">
     <h1 class="mb-3">Lista de Usuarios</h1>
     <table class="table table-striped table-bordered table-hover table-dark">
 
-        <thead>
+        <thead class="table-dark">
         <tr>
             <th>Email</th>
             <th>Rol</th>
@@ -19,9 +26,9 @@
                     <td><%= usuario.email %></td>
                     <td><%= usuario.role %></td>
                     <td>
-                        <a href="/usuarios/editusuarios/<%= usuario._id %>" class="btn btn-sm btn-outline-light">Editar</a>
+                        <a href="/usuarios/editusuarios/<%= usuario._id %>" class="btn btn-sm btn_dark">Editar</a>
                         <form action="/usuarios/delete/<%= usuario._id %>" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-outline-light">Eliminar</button>
+                            <button type="submit" class="btn btn-sm btn-secondary">Eliminar</button>
                         </form>
                     </td>
                 </tr>

@@ -1,5 +1,11 @@
 <%- include('partials/_header') %>
 <style>
+    .header-footer {
+        background-color: #212529;
+        color: white;
+        padding: 10px 0;
+        margin-top: 10px;
+    }
     .card {
         border-color: #212529;
         border-radius: 0.25rem;
@@ -16,10 +22,6 @@
         padding: 10px;
         border-color: #212529;
     }
-    .titulo-asig {
-        color: white;
-        text-decoration: none;
-    }
 </style>
 
 <div class="header-footer text-center">
@@ -34,7 +36,7 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            <a href="/asignaturas/softwares/<%= asignatura.id %>" class="titulo-asig"><h5 class="card-title"><%= asignatura.name %></h5></a>
+                            <h5 class="card-title"><%= asignatura.name %></h5>
                         </div>
                         <div class="card-body">
                             <p class="card-text"><strong>Curso:</strong> <%=asignatura.curso.name%></p>

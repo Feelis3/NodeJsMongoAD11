@@ -41,7 +41,6 @@ router.get('/', async (req, res, next) => {
       asig.curso = cursoConNombre[0];
 
       const asignaturaNueva = {
-        id: asig._id,
         name: asig.nombre,
         curso: asig.curso,
         profesores: nombresProfesores

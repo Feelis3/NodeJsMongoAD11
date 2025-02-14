@@ -28,9 +28,9 @@
             <p><strong>Email:</strong> <span id="user-email"><%=user.email%></span></p>
             <p><strong>Edad:</strong> <span id="user-age"><%=user.age%></span> años</p>
         </div>
-        <%if(asignaturasUsuario.length > 0){%>
         <hr class="my-4">
-        <div>
+        <%if(asignaturasUsuario){%>
+        <div class="asignaturas">
             <h4 class="text-center mb-3">Asignaturas</h4>
             <div class="accordion accordion-flush" id="accordionFlushExample">
                 <% asignaturasUsuario.forEach(function(asignatura, index) { %>
