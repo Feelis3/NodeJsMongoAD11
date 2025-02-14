@@ -14,9 +14,35 @@ function isAuthenticated(req, res, next) {
 //Carga la vista que muestra los enlaces de la asignatura
 router.get('/asignaturas/softwares/:id', isAuthenticated, async (req, res) => {
     try {
+        const user = req.user;
+        var laTiene = false;
+        if (user.role === 0){
+            for (const asignatura of user.asignaturas) {
+                if (asignatura.equals(req.params.id)) {
+                    laTiene = true;
+                    break;
+                }
+            }
+            if (!laTiene) {
+                res.redirect("/");
+            }
+        }
+
         //Cargo los softwares de la asignatura y se los paso a la vista
         console.log(req.params.id);
         const asignatura = await Asignatura.findById(req.params.id);
+        if (user.role === 1){
+            for (let profesor of asignatura.profesor) {
+                if (profesor.equals(user._id)){
+                    laTiene = true;
+                    break;
+                }
+            }
+            if (!laTiene) {
+                res.redirect("/");
+            }
+        }
+
         console.log('Softwares de la asignatura:', asignatura);
         if (!asignatura) return res.status(404).send('Asignatura no encontrada');
 
