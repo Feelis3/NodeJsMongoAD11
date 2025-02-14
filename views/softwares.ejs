@@ -35,6 +35,9 @@
             border-radius: 5px;
         <%} %>
     }
+    .direccion {
+        color: white;
+    }
 </style>
 
 <div class="container-fluid min-vh-100 d-flex" style="background-color: #2c3034">
@@ -88,7 +91,7 @@
                             <div class="card h-100 bg-dark">
                                 <div class="card-body" style="background-color: #2c3034; color: white">
                                     <p class="card-text"><strong>Descripción:</strong> <%= software.descripcion %></p>
-                                    <strong>Url:</strong> <a href="<%=software.direccion %>" target="_blank" class="card-text"><%= software.direccion %></a>
+                                    <strong>Url:</strong> <a href="<%=software.direccion %>" target="_blank" class="card-text direccion"><%= software.direccion %></a>
                                 </div>
                                 <% if (user && user.role >= 1) { %>
                                     <div class="card-footer bg-dark">
