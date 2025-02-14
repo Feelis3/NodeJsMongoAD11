@@ -22,6 +22,10 @@
     #mondongo-img {
         max-width: 450px;
     }
+    .titulo-asig {
+        color: white;
+        text-decoration: none;
+    }
 </style>
 <%if (user){%>
     <%if (user.role === 0){%>
@@ -29,11 +33,10 @@
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <!-- Tarjeta 1 -->
                 <% asignaturasUsuario.forEach(function(asignatura) { %>
-                <%console.log(asignatura)%>
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title"><%= asignatura.name %></h5>
+                            <a href="/asignaturas/softwares/<%= asignatura.id %>" class="titulo-asig"><h5 class="card-title"><%= asignatura.name %></h5></a>
                         </div>
                         <div class="card-body">
                             <p class="card-text"><strong>Curso:</strong> <%=asignatura.curso.name%></p>
