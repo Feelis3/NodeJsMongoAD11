@@ -1,6 +1,53 @@
 <%- include('partials/_header') %>  <!--Prueba Página-->
+
+<style>
+    .la-carta{
+        background-color: #212529;
+        color: white;
+    }
+    .form-control {
+        background-color: #2c3034;
+        color: white;
+        border: 1px solid #555;
+    }
+    .form-control::placeholder {
+        color: darkgrey;
+    }
+    .form-control:focus {
+        background-color: #1f2225;
+        color: white;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    /* Quitar los botones de incremento/decremento en Chrome, Safari y Edge */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    /* Quitar los botones en Firefox */
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+    .modal-content {
+        background-color: #2c3034;
+        border: none;
+    }
+    .modal-header, .modal-footer {
+        border: none;
+    }
+    .botones-horizontales {
+        display: flex;
+        gap: 10px;
+    }
+
+    .botones-horizontales .btn {
+        flex: 1;
+    }
+</style>
+
 <div class="container mt-5">
-    <div class="card shadow-lg p-4">
+    <div class="card shadow-lg p-4 la-carta">
         <h2 class="text-center mb-4">Editar Asignatura</h2>
         <form action="/asignaturas/edit/<%= asignatura._id %>" method="POST">
             <div class="mb-3">
@@ -8,43 +55,39 @@
                 <input type="text" id="nombre" name="nombre" class="form-control" value="<%= asignatura.nombre %>" required>
             </div>
 
-            <div id="alumnoContent" style="display: block;">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalProfesor">
+            <!--Botones de los modales-->
+            <div class="botones-horizontales mb-3">
+                <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#ModalProfesor">
                     Profesores
                 </button>
+                <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#ModalCurso">
+                    Cursos
+                </button>
+            </div>
 
-                <!-- Modal Profesores -->
-                <div class="modal fade" id="ModalProfesor" tabindex="-1" aria-labelledby="ModalProfesorLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="ModalProfesorLabel">Profesores</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <% if (profesores) { %>
-                                    <% profesores.forEach(function (profesor) { %>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="profesor" id="profesor<%= profesor._id %>"
-                                                   value="<%= profesor._id %>"
-                                                    <%= asignatura.profesor && asignatura.profesor.toString() === profesor._id.toString() ? 'checked' : '' %>>
-                                            <label class="form-check-label" for="profesor<%= profesor._id %>"><%= profesor.name %></label>
-                                        </div>
-                                <% }) } %>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
+            <!-- Modal Profesores -->
+            <div class="modal fade" id="ModalProfesor" tabindex="-1" aria-labelledby="ModalProfesorLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="ModalProfesorLabel">Profesores</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <% if (profesores) { %>
+                                <% profesores.forEach(function (profesor) { %>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="profesor" id="curso<%= profesor._id %>" value="<%= profesor._id %>">
+                                        <label class="form-check-label" for="profesor<%= profesor._id %>"><%= profesor.name %></label>
+                                    </div>
+                            <% }) } %>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="mb-3"></div>
-
-            <!-- Botón para abrir el modal de Cursos -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalCurso">
-                Cursos
-            </button>
 
             <!-- Modal Cursos -->
             <div class="modal fade" id="ModalCurso" tabindex="-1" aria-labelledby="ModalCursoLabel" aria-hidden="true">
@@ -55,27 +98,22 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <% if (cursos && cursos.length > 0) { %>
+                            <% if (cursos) { %>
                                 <% cursos.forEach(function (curso) { %>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="curso" id="curso<%= curso._id %>"
-                                               value="<%= curso._id %>"
-                                                <%= asignatura.curso && asignatura.curso.toString() === curso._id.toString() ? 'checked' : '' %>>
+                                        <input class="form-check-input" type="radio" name="curso" id="curso<%= curso._id %>" value="<%= curso._id %>">
                                         <label class="form-check-label" for="curso<%= curso._id %>"><%= curso.name %></label>
                                     </div>
-                                <% }) %>
-                            <% } else { %>
-                                <p>No hay cursos disponibles.</p>
-                            <% } %>
+                            <% }) } %>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="mb-3"></div>
-            <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
+            <hr>
+            <button type="submit" class="btn btn-outline-light w-100">Guardar Cambios</button>
         </form>
     </div>
 </div>
