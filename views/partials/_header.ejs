@@ -23,10 +23,25 @@
   button {
     background-color: #212529;
   }
+  .dropdown-menu {
+    background-color: #212529;
+  }
+  .dropdown-menu li a:hover {
+    color: white;
+    background-color: #007bff;
+  }
+  .dropdown-menu li a {
+    color: white;
+  }
+  .header-footer {
+    background-color: #212529;
+    padding: 10px 0;
+    margin-top: 10px;
+  }
 </style>
 <body>
   <!-- Header / Barra de navegación -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">
         <img src="../../public/resources/toad.png" class="rounded float-start" id="logo" alt="Logo">
@@ -71,7 +86,7 @@
                   <li><a class="dropdown-item" href="/usuarios">Todos los usuarios</a></li>
                   <li><a class="dropdown-item" href="/alumnos">Alumnos</a></li>
                   <li><a class="dropdown-item" href="/profesores">Profesores</a></li>
-                  <li><a class="dropdown-item" href="/administradores">Administrador</a></li>
+                  <li><a class="dropdown-item" href="/administradores">Administradores</a></li>
                 </ul>
               </li>
 
