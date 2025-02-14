@@ -17,7 +17,6 @@ require('./passport/local-auth');
 var usersRouter = require('./routes/users');
 var asignaturasRouter = require('./routes/asignaturas');
 var cursosRouter = require('./routes/cursos');
-var softwaresRouter = require('./routes/softwares');
 
 
 // view engine setup
@@ -58,7 +57,6 @@ app.use((req, res, next) => {
 app.use('/', usersRouter);
 app.use('/', asignaturasRouter);
 app.use('/', cursosRouter);
-app.use('/', softwaresRouter);
 
 
 
