@@ -152,7 +152,8 @@ router.post('/asignaturas/add', isAuthenticated, async (req, res) => {
 //EDIT
 router.get('/asignaturas/editAsignaturas/:id', isAuthenticated, async (req, res) => {
     try {
-        if (req.user.role === 2) {
+        //Cambio el if para que puedan actualizar también profesores
+        if (req.user.role >= 1) {
             const asignatura = await Asignatura.findById(req.params.id);
             if (!asignatura) return res.status(404).send('Asignatura no encontrada');
             const cursos = await Cursos.find();
@@ -190,8 +191,8 @@ router.post('/asignaturas/edit/:id', isAuthenticated, async (req, res) => {
             );
 
             //Al terminar de editar compruebo si es profesor o admin para redirigir a asignaturasAdmin o al contenido de la asignatura
-            if (user.role === 1){
-                res.redirect("asignaturas/softwares/" + req.params.id);
+            if (req.user.role === 1){
+                res.redirect("/asignaturas/softwares/" + req.params.id);
             } else {
                 res.redirect('/asignaturasAdmin');
             }
