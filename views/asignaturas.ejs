@@ -26,15 +26,20 @@
         color: white;
         text-decoration: none;
     }
+    .no-hay {
+        margin: 25px 25%;
+    }
+    .no-hay h4 {
+        color: darkgrey;
+    }
 </style>
 
 <div class="header-footer text-center">
     <h1>Listado de Asignaturas</h1>
 </div>
-<div class="container mt-4">
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        <!-- Tarjeta 1 -->
-
+<% if (asignaturasUsuario.length > 0){%>
+    <div class="container mt-4">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
             <% asignaturasUsuario.forEach(function(asignatura) { %>
 
                 <div class="col">
@@ -66,7 +71,12 @@
                     </div>
                 </div>
             <% }) %>
+        </div>
     </div>
-</div>
+<% } else {%>
+    <div class="header-footer text-center no-hay">
+        <h4>No tiene asignaturas.</h4>
+    </div>
+<%}%>
 
 <%- include('partials/_footer') %>
