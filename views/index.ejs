@@ -21,6 +21,7 @@
     }
     .fotos_inicio {
         max-width: 450px;
+        max-height: 40rem;
     }
     .fotos-horizontales {
         display: flex;
@@ -58,10 +59,19 @@
             <audio autoplay loop class="mt-4" style="display: none;">
                 <source src="../public/music/banda_sonora_index_profesor.mp3" type="audio/mpeg">
             </audio>
-            <img src="../public/resources/camel_profesor.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio profesor" style="max-height: 575px">
+            <img src="../public/resources/camel_profesor.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio profesor">
         </div>
     <%} else{%>
-
+        <div class="container mt-4 text-center">
+            <div style="margin: 5rem">
+                <h1 class="text-center">Hola <%= user.name%> <%= user.lastName%></h1>
+                <h4 class="text-center">Bienvenido Lidel</h4>
+            </div>
+            <audio autoplay loop class="mt-4" style="display: none;">
+                <source src="../public/music/banda_sonora_index_admin.mp3" type="audio/mpeg">
+            </audio>
+            <img src="../public/resources/camel_admin.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio admin">
+        </div>
     <%}%>
 <%}else{%>
     <div class="container mt-4 text-center">
