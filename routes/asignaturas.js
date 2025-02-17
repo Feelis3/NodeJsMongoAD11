@@ -6,6 +6,8 @@ const Asignaturas = require("../models/asignatura");
 const Asignatura = require("../models/asignatura");
 const Curso = require("../models/Curso");
 const Cursos = require("../models/Curso");
+const Software = require("../models/software");
+
 
 
 
@@ -218,7 +220,7 @@ router.post('/asignaturas/delete/:id', isAuthenticated, async (req, res) => {
             for (let i = 0; i < usuarios.length; i++) {
                 const usuario = usuarios[i];
 
-                // Verificar si el usuario tiene esta asignatura en su array
+                // Verificar si el usuario tiene esta asignatura en su array //.some solo se utiliza si es un array
                 if (usuario.asignaturas && usuario.asignaturas.some(asigId => asigId.toString() === asignaturaID)) {
                     await Usuario.findByIdAndUpdate(usuario._id, {
                         $pull: { asignaturas: asignaturaID }
@@ -226,6 +228,22 @@ router.post('/asignaturas/delete/:id', isAuthenticated, async (req, res) => {
                     console.log(`Asignatura ${asignaturaID} eliminada del usuario ${usuario._id}`);
                 }
             }
+
+            // Obtener todos los softwares
+            const softwares = await Software.find();
+
+            // Recorrer todos los softwares y eliminar los que contengan la asignatura
+            for (let i = 0; i < softwares.length; i++) {
+                const software = softwares[i];
+
+                // Verificar si el software tiene esta asignatura asociada
+                if (software.asignatura && software.asignatura.toString() === asignaturaID) {
+                    // Eliminar completamente el software
+                    await Software.findByIdAndDelete(software._id);
+                    console.log(`Software ${software._id} eliminado porque estaba asociado a la asignatura ${asignaturaID}`);
+                }
+            }
+
 
             // Vaciar profesores y alumnos de la asignatura antes de eliminarla
             await Asignatura.findByIdAndUpdate(asignaturaID, {
