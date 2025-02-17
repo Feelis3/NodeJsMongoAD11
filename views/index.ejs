@@ -1,6 +1,6 @@
 <%- include('partials/_header') %>
 <style>
-    .card {
+    /*.card {
         border-color: #212529;
         border-radius: 0.25rem;
         background-color: #212529;
@@ -15,12 +15,22 @@
         color: white;
         padding: 10px;
         border-color: #212529;
-    }
+    }*/
     h4 {
         margin: 1.5rem;
     }
-    #mondongo-img {
+    .fotos_inicio {
         max-width: 450px;
+    }
+    .fotos-horizontales {
+        display: flex;
+        gap: 10px;
+    }
+    .fotos-horizontales img {
+        flex: 1;
+    }
+    .espejo {
+        transform: scaleX(-1);
     }
     .titulo-asig {
         color: white;
@@ -29,30 +39,15 @@
 </style>
 <%if (user){%>
     <%if (user.role === 0){%>
-        <div class="container mt-4">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <!-- Tarjeta 1 -->
-                <% asignaturasUsuario.forEach(function(asignatura) { %>
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header">
-                            <a href="/asignaturas/softwares/<%= asignatura.id %>" class="titulo-asig"><h5 class="card-title"><%= asignatura.name %></h5></a>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text"><strong>Curso:</strong> <%=asignatura.curso.name%></p>
-                            <p class="card-text"><strong>Profesores: </strong></p>
-                            <% if (asignatura.profesores) { %>
-                            <ul>
-                                <%asignatura.profesores.forEach(profesor=>{%>
-                                    <li><%= profesor %></li>
-                                <%})%>
-                            </ul>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
-                <% }) %>
+        <div class="container mt-4 text-center">
+            <div style="margin: 5rem">
+                <h1 class="text-center">Hola <%= user.name%> <%= user.lastName%></h1>
+                <h4 class="text-center">Bienvenido a su Aula Virtual</h4>
             </div>
+            <audio controls autoplay loop class="mt-4" style="display: none;">
+                <source src="../public/music/banda_sonora_index_alumno.mp3" type="audio/mpeg">
+            </audio>
+            <img src="../public/resources/camel_alumno_4.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio alumno">
         </div>
     <%} else if (user.role === 1){%>
 
@@ -65,7 +60,11 @@
             <h1 class="text-center">Bienvenido a ToadMafia</h1>
             <h4 class="text-center">Inicie sesión o regístrese para empezar.</h4>
         </div>
-        <img src="../public/resources/mondongo.jpg" class="img-fluid d-block mx-auto" id="mondongo-img" alt="Foto inicio">
+        <div class="fotos-horizontales mb-3">
+            <img src="../public/resources/nano.jpg" class="img-fluid d-block mx-auto fotos_inicio espejo" alt="Foto inicio nano">
+            <img src="../public/resources/mondongo.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio mondongo">
+            <img src="../public/resources/nano.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio nano">
+        </div>
     </div>
 <%}%>
 <%- include('partials/_footer') %>
