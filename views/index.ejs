@@ -29,13 +29,6 @@
         max-width: 450px;
         max-height: 40rem;
     }
-    .fotos-horizontales {
-        display: flex;
-        gap: 10px;
-    }
-    .fotos-horizontales img {
-        flex: 1;
-    }
     .espejo {
         transform: scaleX(-1);
     }
@@ -55,7 +48,7 @@
             <audio autoplay loop class="mt-4" style="display: none;">
                 <source src="../public/music/banda_sonora_index_alumno.mp3" type="audio/mpeg">
             </audio>
-            <img src="../public/resources/camel_alumno_4.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio alumno">
+            <img src="../public/resources/camel_alumno_4.jpg" class="img-fluid w-50 mx-auto d-block fotos_inicio" alt="Foto inicio alumno">
         </div>
     <%} else if (user.role === 1){%>
         <div class="container mt-4 text-center">
@@ -67,7 +60,7 @@
             <audio autoplay loop class="mt-4" style="display: none;">
                 <source src="../public/music/banda_sonora_index_profesor.mp3" type="audio/mpeg">
             </audio>
-            <img src="../public/resources/camel_profesor.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio profesor">
+            <img src="../public/resources/camel_profesor.jpg" class="img-fluid w-50 mx-auto d-block fotos_inicio" alt="Foto inicio profesor">
         </div>
     <%} else{%>
         <div class="container mt-4 text-center">
@@ -79,7 +72,7 @@
             <audio autoplay loop class="mt-4" style="display: none;">
                 <source src="../public/music/banda_sonora_index_admin.mp3" type="audio/mpeg">
             </audio>
-            <img src="../public/resources/camel_admin.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio admin">
+            <img src="../public/resources/camel_admin.jpg" class="img-fluid w-50 mx-auto d-block fotos_inicio" alt="Foto inicio admin">
         </div>
     <%}%>
 <%}else{%>
@@ -88,10 +81,18 @@
             <h1 class="text-center">Bienvenido a CamelMafia</h1>
             <h4 class="text-center">Inicie sesión para empezar.</h4>
         </div>
-        <div class="fotos-horizontales mb-3">
-            <img src="../public/resources/nano.jpg" class="img-fluid d-block mx-auto fotos_inicio espejo" alt="Foto inicio nano">
-            <img src="../public/resources/mondongo.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio mondongo">
-            <img src="../public/resources/nano.jpg" class="img-fluid d-block mx-auto fotos_inicio" alt="Foto inicio nano">
+        <div class="container">
+            <div class="row justify-content-center g-3 text-center">
+                <div class="col-4">
+                    <img src="../public/resources/nano.jpg" class="img-fluid espejo" alt="Foto inicio nano">
+                </div>
+                <div class="col-4">
+                    <img src="../public/resources/mondongo.jpg" class="img-fluid" alt="Foto inicio mondongo">
+                </div>
+                <div class="col-4">
+                    <img src="../public/resources/nano.jpg" class="img-fluid" alt="Foto inicio nano">
+                </div>
+            </div>
         </div>
     </div>
 <%}%>
