@@ -6,22 +6,6 @@
 </script>
 
 <style>
-    /*.card {
-        border-color: #212529;
-        border-radius: 0.25rem;
-        background-color: #212529;
-    }
-    .card-body {
-        background-color: #2c3034;
-        color: white;
-        border-color: #212529;
-    }
-    .card-header {
-        background-color: #212529;
-        color: white;
-        padding: 10px;
-        border-color: #212529;
-    }*/
     h4 {
         margin: 1.5rem;
     }
@@ -45,7 +29,7 @@
                 <h4 class="text-center">Bienvenido a su Aula Virtual</h4>
             </div>
             <!--Banda sonora BOF-->
-            <audio autoplay loop class="mt-4" style="display: none;">
+            <audio autoplay loop  class="mt-4" style="display: none;">
                 <source src="../public/music/banda_sonora_index_alumno.mp3" type="audio/mpeg">
             </audio>
             <img src="../public/resources/camel_alumno_4.jpg" class="img-fluid w-50 mx-auto d-block fotos_inicio" alt="Foto inicio alumno">
@@ -82,7 +66,7 @@
             <h4 class="text-center">Inicie sesión para empezar.</h4>
         </div>
         <!--Banda sonora BOF-->
-        <audio autoplay loop class="mt-4" style="display: none;">
+        <audio autoplay loop id="audioLogout" class="mt-4" style="display: none;">
             <source src="../public/music/banda_sonora_index_logout.mp3" type="audio/mpeg">
         </audio>
         <div class="container">
@@ -100,4 +84,35 @@
         </div>
     </div>
 <%}%>
+
+<!--Hacer que si el ratón pasa por la imagen de mondongo-->
+<script>
+    // Crear un elemento de audio para la canción que quieres que suene
+    var audioMondongo = new Audio('../public/music/mondongo.mp3');
+    var audioLogout = document.getElementById("audioLogout");
+
+    // Obtener la imagen de mondongo
+    var imagenMondongo = document.getElementById('imagenMondongo');
+
+    // Reproducir la canción de mondongo cuando el ratón pase por encima de la imagen
+    imagenMondongo.addEventListener('mouseenter', function() {
+        // Detener el audio de logout
+        audioLogout.pause();
+
+        // Reproducir el audio de mondongo
+        audioMondongo.play();
+
+        // Cuando el audio de mondongo termine, volver a reproducir el audio de logout
+        audioMondongo.addEventListener('ended', function() {
+            audioLogout.play();
+        });
+    });
+
+    // Detener el audio de mondongo cuando el ratón sale de la imagen
+    imagenMondongo.addEventListener('mouseleave', function() {
+        audioMondongo.pause();
+        audioMondongo.currentTime = 0; // Reiniciar al principio
+    });
+</script>
+
 <%- include('partials/_footer') %>
