@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Software = require("../models/software");
 const Asignatura = require("../models/asignatura");
+const fs = require('fs') //fileSystem
+const csv = require('csv-parser');
 
 function isAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
@@ -81,10 +83,20 @@ router.post('/asignaturas/softwares/:id/add', isAuthenticated, async (req, res) 
             const software = new Software({
                     direccion : req.body.direccion,
                     descripcion : req.body.descripcion,
-                    asignatura : req.params.id
+                    asignatura : req.params.id,
+
+            });
+
+            //Archivo
+            if (req.files && req.files.archivo) {
+                let EDFile = req.files.archivo;
+                software.archivo = EDFile.name;
+                await EDFile.mv(`./files/${EDFile.name}`);
+            } else {
+                console.error('No se ha recibido ningún archivo');
             }
 
-            );
+
             await software.save();
             res.redirect(`/asignaturas/softwares/${req.params.id}`);
         } catch (error) {

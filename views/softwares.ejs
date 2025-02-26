@@ -67,7 +67,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancelar"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/asignaturas/softwares/<%= asignatura.id%>/add/" method="POST">
+                    <form action="/asignaturas/softwares/<%= asignatura.id%>/add/" method="POST" enctype="multipart/form-data"  >
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción:</label>
                             <input type="text" id="descripcion" name="descripcion" class="form-control" required>
@@ -75,6 +75,10 @@
                         <div class="mb-3">
                             <label for="direccion" class="form-label">Url:</label>
                             <input type="text" id="direccion" name="direccion" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="archivo" class="form-label">Archivo:</label>
+                            <input type="file" id="archivo" name="archivo" class="form-control" required>
                         </div>
                         <button type="submit" class="btn btn-dark w-100">Guardar Cambios</button>
                     </form>
@@ -102,13 +106,21 @@
                                         <%= software.direccion %>
                                     </a>
 
-                                    <script>
-                                        //Cuando carga el dom, comprueba la direccion este bien
-                                        document.addEventListener("DOMContentLoaded", function () {
+                                    <% if (software.archivo) { %>
+                                    <br>
 
+                                        <a href="/files/<%= software.archivo %>" download>
+                                            <%= software.archivo %>
+                                        </a>
+
+                                <% } else { %>
+                                        <p>No file</p>
+                                    <% } %>
+
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function () {
                                             let url = "<%= software.direccion %>";
 
-                                            // Si la URL no comienza con "http://" o "https://", agrégale "https://"
                                             if (!url.startsWith("http://") && !url.startsWith("https://")) {
                                                 url = "https://" + url;
                                                 document.getElementById("software-link").href = url;
@@ -116,7 +128,8 @@
                                         });
                                     </script>
                                 </div>
-                                <% if (user && user.role >= 1) { %>
+
+                            <% if (user && user.role >= 1) { %>
                                     <div class="card-footer bg-dark">
                                         <!--BOTÓN EDITAR-->
                                         <button type="button" class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#ModalEdit<%= software._id %>">Editar</button>

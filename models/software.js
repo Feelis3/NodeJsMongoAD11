@@ -6,7 +6,8 @@ const { Schema } = mongoose;
 const softwareSchema = new Schema({
     direccion:  { type: String, required: true },
     descripcion: { type: String, required: true },
-    asignatura: { type: Schema.Types.ObjectId, ref: 'softwares', required: true }
+    asignatura: { type: Schema.Types.ObjectId, ref: 'softwares', required: true },
+    archivo: {type: String}
 });
 
 module.exports = mongoose.model('software', softwareSchema);
