@@ -235,7 +235,10 @@ router.post('/usuarios/edit/:id', isAuthenticated, async (req, res) => {
     try {
       const { email, name, lastName, age, role, asignaturas } = req.body; //Obtengo los datos del formulario
       let updatedUser = { email, name, lastName, age, role, asignaturas };
-
+      if(req.params.id==req.user.id&&(1==updatedUser.role||1==updatedUser.role)){
+        req.flash('editUser', 'No puedes quitarte el admin.');
+        return res.redirect('/usuarios');
+      }
       //COMPRUEBA QUE EL CORREO AL EDITAR ES DIFERENTE A UNO EQUE EXISTE Y NO SALTE ERROR SI EL QUE EXISTE ES EL ANTIGUO
       const existingUser = await User.findOne({ email });
       const antiguoEmail = await User.findById(req.params.id);
@@ -422,7 +425,7 @@ router.get('/usuarios', isAuthenticated, async (req, res) => {
       res.status(500).send('Error al obtener los usuarios');
     }
   } else {
-    //res.redirect('/error');
+    res.redirect('index');
   }
 });
 
