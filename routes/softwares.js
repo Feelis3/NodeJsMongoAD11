@@ -4,7 +4,7 @@ const Software = require("../models/software");
 const Asignatura = require("../models/asignatura");
 const fs = require('fs') //fileSystem
 const csv = require('csv-parser');
-
+const path = require('path');
 function isAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
         return next();
@@ -62,11 +62,51 @@ router.get('/asignaturas/softwares/:id', isAuthenticated, async (req, res) => {
     }
 })
 
+
 router.post('/asignaturas/softwares/edit/:id', isAuthenticated, async (req, res) => {
-    if (req.user.role >= 1){
+    if (req.user.role >= 1) {
         try {
-            const software = await Software.findByIdAndUpdate(req.params.id, req.body, {new: true});
-            res.redirect(`/asignaturas/softwares/${software.asignatura}`);
+            // Obtener el software antes de actualizar
+            let software = await Software.findById(req.params.id);
+            if (!software) {
+                return res.status(404).send('Software no encontrado');
+            }
+
+            let archivoAnterior = software.archivo; // Guardamos el archivo antiguo
+            let idAsignatura = software.asignatura; // ID de la asignatura para la redirección
+
+
+            Object.keys(req.body).forEach(key => {
+                if (key !== 'archivo') {
+                    software[key] = req.body[key];
+                }
+            });
+
+            if (req.files && req.files.archivo) {
+                let EDFile = req.files.archivo;
+                let extension = path.extname(EDFile.name);
+                let nombreBase = path.basename(EDFile.name, extension);
+                let timestamp = Date.now();
+                let nuevoNombre = `${nombreBase}_${timestamp}${extension}`;
+
+                if (archivoAnterior) {
+                    const rutaArchivoAntiguo = path.join(__dirname, '..', 'files', archivoAnterior);
+                    if (fs.existsSync(rutaArchivoAntiguo)) {
+                        fs.unlinkSync(rutaArchivoAntiguo);
+                        console.log("Archivo antiguo eliminado:", archivoAnterior);
+                    }
+                }
+
+                // Guardar el nuevo archivo
+                await EDFile.mv(`./files/${nuevoNombre}`);
+                console.log("Nuevo archivo guardado:", nuevoNombre);
+
+                software.archivo = nuevoNombre;
+            }
+
+            await software.save();
+
+            res.redirect(`/asignaturas/softwares/${idAsignatura}`);
         } catch (error) {
             console.error("Error al actualizar el software:", error);
             res.status(500).send('Error al actualizar el software');
@@ -74,7 +114,8 @@ router.post('/asignaturas/softwares/edit/:id', isAuthenticated, async (req, res)
     } else {
         return res.redirect('/');
     }
-})
+});
+
 
 router.post('/asignaturas/softwares/:id/add', isAuthenticated, async (req, res) => {
     if (req.user.role >= 1){
@@ -93,8 +134,19 @@ router.post('/asignaturas/softwares/:id/add', isAuthenticated, async (req, res) 
             //Archivo
             if (req.files && req.files.archivo) {
                 let EDFile = req.files.archivo;
-                software.archivo = EDFile.name;
-                await EDFile.mv(`./files/${EDFile.name}`);
+
+                let extension = path.extname(EDFile.name);
+
+                let nombreBase = path.basename(EDFile.name, extension);
+
+                let timestamp = Date.now(); // Milisegundos actuales
+
+                let nuevoNombre = `${nombreBase}_${timestamp}${extension}`;
+
+                // Guardar el archivo con el nuevo nombre
+                await EDFile.mv(`./files/${nuevoNombre}`);
+
+                software.archivo = nuevoNombre;
             } else {
                 console.error('No se ha recibido ningún archivo');
             }
@@ -112,11 +164,32 @@ router.post('/asignaturas/softwares/:id/add', isAuthenticated, async (req, res) 
 })
 
 router.post('/asignaturas/softwares/delete/:id', isAuthenticated, async (req, res) => {
-    if (req.user.role >= 1){
+    if (req.user.role >= 1) {
         try {
             const software = await Software.findById(req.params.id);
+            if (!software) {
+                return res.status(404).send('Software no encontrado');
+            }
+
             const idAsignatura = software.asignatura;
+
+            //Solo borra si existe archivo
+            if (software.archivo) {
+                const rutaArchivo = path.join(__dirname, '..', 'files', software.archivo);
+
+                if (fs.existsSync(rutaArchivo)) {
+                    fs.unlinkSync(rutaArchivo);
+                    console.log("Archivo eliminado:", software.archivo);
+                } else {
+                    console.log("El archivo no existe:", software.archivo);
+                }
+            } else {
+                console.log("El software no tiene un archivo asociado.");
+            }
+
+
             await Software.findByIdAndDelete(req.params.id);
+
             res.redirect('/asignaturas/softwares/' + idAsignatura);
         } catch (error) {
             console.error("Error al eliminar el software:", error);

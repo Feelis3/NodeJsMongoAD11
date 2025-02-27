@@ -1,0 +1,5 @@
+email,password,name,lastName,age,role
+usuario1@example.com,1,Juan,Pérez,25,1
+usuario2@example.com,1,María,Gómez,30,2
+usuario3@example.com,1,Carlos,López,28,0
+usuario4@example.com,1,Ana,Martínez,22,0

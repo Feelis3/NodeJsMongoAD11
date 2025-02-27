@@ -4,49 +4,69 @@
 <script>
     document.title = "Usuarios | CamelMafia";
 </script>
-
 <div class="container mt-4">
     <h1 class="mb-3">Lista de Usuarios</h1>
-    <table class="table table-striped table-bordered table-hover table-dark">
 
-        <thead>
-        <tr>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <% if (usuarios && usuarios.length > 0) { %>
-            <% usuarios.forEach(usuario => { %>
+    <div class="d-flex">
+        <!-- Tabla de Usuarios -->
+        <div class="w-75">
+            <table class="table table-striped table-bordered table-hover table-dark">
+                <thead>
                 <tr>
-                    <td><%= usuario.email %></td>
-                    <td><%= usuario.role %></td>
-                    <td>
-                        <a href="/usuarios/editusuarios/<%= usuario._id %>" class="btn btn-sm btn-outline-light">Editar</a>
-                        <form action="/usuarios/delete/<%= usuario._id %>" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-outline-light">Eliminar</button>
-                        </form>
-                    </td>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
                 </tr>
-            <% }) %>
-        <% } else { %>
-            <tr>
-                <td colspan="3" class="text-center">No hay usuarios para mostrar</td>
-            </tr>
-        <% } %>
-        </tbody>
+                </thead>
+                <tbody>
+                <% if (usuarios && usuarios.length > 0) { %>
+                    <% usuarios.forEach(usuario => { %>
+                        <tr>
+                            <td><%= usuario.email %></td>
+                            <td><%= usuario.role %></td>
+                            <td>
+                                <a href="/usuarios/editusuarios/<%= usuario._id %>" class="btn btn-sm btn-outline-light">Editar</a>
+                                <form action="/usuarios/delete/<%= usuario._id %>" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-light">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="3" class="text-center">No hay usuarios para mostrar</td>
+                    </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
 
-    </table>
-    <%if (createUser) {%>
-        <p style="color:#FF0000;"><%= createUser %></p>
+        <!-- Formulario de CSV (más pequeño en ancho y altura) -->
+        <div class="card bg-dark text-white w-25 ms-4 p-2 rounded" style="min-height: 250px; max-height: 300px; height: auto; overflow-y: auto;">
+            <div class="card-body p-2">
+                <h6 class="card-title text-center fs-6 mb-2">Importar CSV</h6>
+                <form action="/addUserCsv" method="post" enctype="multipart/form-data">
+                    <div class="form-group mb-1">
+                        <label for="csvFile" class="form-label fs-6">Archivo CSV</label>
+                        <input id="csvFile" class="form-control form-control-sm" type="file" name="archivo" accept=".csv" required>
+                    </div>
+                    <button class="btn btn-primary btn-sm w-100 mt-1" type="submit">Subir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensajes de Error -->
+    <% if (createUser) { %>
+        <p class="text-danger mt-2"><%= createUser %></p>
     <% } %>
-    <%if (editUser) {%>
-        <p style="color:#FF0000;"><%= editUser %></p>
+    <% if (editUser) { %>
+        <p class="text-danger mt-2"><%= editUser %></p>
     <% } %>
-    <a href="/usuarios/addusuarios" class="btn btn-dark">Crear Usuario</a>
+
+    <a href="/usuarios/addusuarios" class="btn btn-dark mt-3">Crear Usuario</a>
 </div>
+
 
 
 

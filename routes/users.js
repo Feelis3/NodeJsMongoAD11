@@ -13,7 +13,9 @@ const { ObjectId } = require("mongodb");
 const Curso = require("../models/Curso");
 const child_process = require("node:child_process"); // Asegurar uso correcto de ObjectId
 
-
+const csv = require('csv-parser'); // Importar csv-parser
+const path = require('path');
+const fs = require('fs');
 
 router.get('/', async (req, res, next) => {
   if (req.isAuthenticated()) { // Verifica si el usuario está autenticado
@@ -496,6 +498,83 @@ router.get('/administradores', isAuthenticated, async (req, res) => {
     //res.redirect('/error');
   }
 });
+
+
+//SUBIR USUARIOS CSV
+const readCSVFile = async (fileName, user) => {
+  try {
+    const results = [];
+    fs.createReadStream(fileName)
+        .pipe(csv({ separator: ',' }))  // Usar csv-parser para procesar el archivo
+        .on('data', (data) => results.push(data))
+        .on('end', async () => {
+          for (const usuario of results) {
+            const usuarioExistente = await Usuario.findOne({ email: usuario.email });
+            if (usuarioExistente) {
+              console.log(`El email ${usuario.email} ya está registrado. Se omitirá.`);
+              continue;
+            }
+
+            const encryptedPassword = bcrypt.hashSync(usuario.password); // 10 es el número de rondas de hashing
+
+            const nuevoUsuario = new Usuario({
+              email: usuario.email,
+              password: encryptedPassword,
+              name: usuario.name,
+              lastName: usuario.lastName,
+              age: Number(usuario.age),
+              role: Number(usuario.role) || 0,
+              asignaturas: []
+            });
+
+
+            await nuevoUsuario.save();
+            console.log(`Usuario ${usuario.email} creado correctamente.`);
+          }
+          console.log('CSV procesado correctamente.');
+        });
+  } catch (error) {
+    console.error('Error al procesar CSV:', error);
+  }
+};
+
+// Subir tareas desde un archivo CSV
+router.post('/addUserCsv', isAuthenticated, async (req, res) => {
+  try {
+    if (!req.files || !req.files.archivo) {
+      return res.status(400).send('No se subió ningún archivo');
+    }
+
+    const fileUser = req.files.archivo;
+    const extension = path.extname(fileUser.name);
+    const nombreBase = path.basename(fileUser.name, extension);
+    const timestamp = Date.now();
+
+    const nuevoNombre = `${nombreBase}_${timestamp}${extension}`;
+
+    const dirPath = path.resolve(__dirname, '..', 'files', 'usuarios'); // Sube un nivel para estar en la raíz del proyecto
+
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+
+    const filePath = path.join(dirPath, nuevoNombre);
+
+    await fileUser.mv(filePath);
+
+
+
+    await readCSVFile(filePath, req.user._id);
+
+
+    res.redirect('/usuarios');
+  } catch (error) {
+    console.error('Error al subir CSV:', error);
+    res.status(500).send('Error al subir archivo CSV');
+  }
+});
+
+
 
 
 module.exports = router;

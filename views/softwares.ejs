@@ -143,7 +143,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancelar"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form action="/asignaturas/softwares/edit/<%= software._id%>" method="POST">
+                                                        <form action="/asignaturas/softwares/edit/<%= software._id%>" method="POST" enctype="multipart/form-data">
                                                             <div class="mb-3">
                                                                 <label for="descripcion" class="form-label">Descripción:</label>
                                                                 <input type="text" id="descripcion<%= software._id %>" name="descripcion" class="form-control" required value="<%= software.descripcion %>">
@@ -151,6 +151,10 @@
                                                             <div class="mb-3">
                                                                 <label for="direccion" class="form-label">Url:</label>
                                                                 <input type="text" id="direccion<%= software._id %>" name="direccion" class="form-control" required value="<%= software.direccion %>">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="archivo" class="form-label">Archivo:</label>
+                                                                <input type="file" id="archivo" name="archivo" class="form-control" >
                                                             </div>
                                                             <button type="submit" class="btn btn-dark w-100">Guardar Cambios</button>
                                                         </form>
