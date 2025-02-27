@@ -6,7 +6,7 @@ Correo/Email/Courriel/E-Mail/Email/E-mail/Электронная почта:<br>
 Contraseña/Password/Mot de passe/Passwort/Password/Senha/Пароль:<br>
 1<br>
 
-Profesor:<br>
+Profesor: <br>
 Correo/Email/Courriel/E-Mail/Email/E-mail/Электронная почта:<br>
 profesor121@gmail.com<br>
 Contraseña/Password/Mot de passe/Passwort/Password/Senha/Пароль:<br>

@@ -15,7 +15,11 @@ function isAuthenticated(req, res, next) {
 
 //Carga la vista que muestra los enlaces de la asignatura
 router.get('/asignaturas/softwares/:id', isAuthenticated, async (req, res) => {
+
+
     try {
+        const asignatura = await Asignatura.findById(req.params.id);
+        if (!asignatura) return res.status(404).send('Asignatura no encontrada');
         const user = req.user;
         var laTiene = false;
         if (user.role === 0){
@@ -32,7 +36,6 @@ router.get('/asignaturas/softwares/:id', isAuthenticated, async (req, res) => {
 
         //Cargo los softwares de la asignatura y se los paso a la vista
         console.log(req.params.id);
-        const asignatura = await Asignatura.findById(req.params.id);
         if (user.role === 1){
             for (let profesor of asignatura.profesor) {
                 if (profesor.equals(user._id)){
