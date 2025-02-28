@@ -44,6 +44,19 @@
     .direccion {
         color: white;
     }
+
+     .image-container {
+         max-width: 100%;
+         text-align: center;
+     }
+
+    .image-container img {
+        max-width: 50%;
+        height: auto;
+        display: block;
+        margin: 10px auto;
+        border-radius: 8px; /* Opcional, para esquinas redondeadas */
+    }
 </style>
 
 <div class="container-fluid min-vh-100 d-flex" style="background-color: #2c3034">
@@ -107,13 +120,16 @@
                                     </a>
 
                                     <% if (software.archivo) { %>
-                                    <br>
-
+                                        <br>
                                         <a href="/files/<%= software.archivo %>" download>
                                             <%= software.archivo %>
                                         </a>
 
-                                <% } else { %>
+                                        <div class="image-container">
+                                            <img src="/files/<%= software.archivo %>" alt="No es una imagen">
+                                        </div>
+
+                                    <% } else { %>
                                         <p>No file</p>
                                     <% } %>
 
