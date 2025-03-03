@@ -9,7 +9,9 @@ const Cursos = require("../models/Curso");
 const Software = require("../models/software");
 
 
-
+const csv = require('csv-parser'); // Importar csv-parser
+const path = require('path');
+const fs = require('fs');
 
 router.get('/asignaturas',isAuthenticated, async (req, res) => {
     const user = new Usuario();
@@ -262,6 +264,86 @@ router.post('/asignaturas/delete/:id', isAuthenticated, async (req, res) => {
         }
     } else {
         return res.redirect('/'); // Si no es administrador, redirigir a la página principal
+    }
+});
+
+
+//SUBIR ASIGNATURAS CSV
+const readCSVFile = async (fileName) => {
+    try {
+        const results = [];
+        fs.createReadStream(fileName)
+            .pipe(csv({ separator: ',' }))  // Usar csv-parser para procesar el archivo
+            .on('data', (data) => results.push(data))
+            .on('end', async () => {
+                for (const asignatura of results) {
+                    // Verificar si la asignatura ya existe
+                    const asignaturaExistente = await Asignatura.findOne({ nombre: asignatura.nombre });
+                    if (asignaturaExistente) {
+                        console.log(`La asignatura ${asignatura.nombre} ya está registrada. Se omitirá.`);
+                        continue;
+                    }
+
+                    // Buscar el curso por su ID o nombre (ajustar según tus necesidades)
+                    const curso = await Curso.findOne({ _id: asignatura.curso }); // Suponiendo que el CSV contiene el ID del curso
+                    if (!curso) {
+                        console.log(`Curso con ID ${asignatura.curso} no encontrado. Se omitirá la asignatura.`);
+                        continue;
+                    }
+
+                    // Crear la nueva asignatura con alumnos vacíos y sin profesor
+                    const nuevaAsignatura = new Asignatura({
+                        nombre: asignatura.nombre,
+                        curso: curso._id,
+                        alumnos: [],
+                        profesor: []
+                    });
+
+                    // Guardar en la base de datos
+                    await nuevaAsignatura.save();
+                    console.log(`Asignatura ${asignatura.nombre} creada correctamente.`);
+                }
+                console.log('CSV de asignaturas procesado correctamente.');
+            });
+    } catch (error) {
+        console.error('Error al procesar CSV de asignaturas:', error);
+    }
+};
+
+
+// Subir tareas desde un archivo CSV
+router.post('/addAsigCsv', isAuthenticated, async (req, res) => {
+    try {
+        if (!req.files || !req.files.archivo) {
+            return res.status(400).send('No se subió ningún archivo');
+        }
+
+        const fileUser = req.files.archivo;
+        const extension = path.extname(fileUser.name);
+        const nombreBase = path.basename(fileUser.name, extension);
+        const timestamp = Date.now();
+
+        const nuevoNombre = `${nombreBase}_${timestamp}${extension}`;
+
+        const dirPath = path.resolve(__dirname, '..', 'files', 'asignaturas'); // Sube un nivel para estar en la raíz del proyecto
+
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
+        const filePath = path.join(dirPath, nuevoNombre);
+
+        await fileUser.mv(filePath);
+
+
+
+        await readCSVFile(filePath, req.user._id);
+
+
+        res.redirect('/asignaturasAdmin');
+    } catch (error) {
+        console.error('Error al subir CSV:', error);
+        res.status(500).send('Error al subir archivo CSV');
     }
 });
 

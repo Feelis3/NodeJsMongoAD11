@@ -181,5 +181,18 @@
         <% } %>
     </main>
 </div>
+<!-- Formulario de contacto -->
+<div class="container mt-4">
+    <div class="card p-3 mx-auto" style="max-width: 600px; background-color: #1f2225; color: white; border-radius: 10px;">
+        <h5 class="text-center mb-3">Enviar Correo</h5>
+        <form action="/enviar-correo/<%=asignatura.id%>" method="POST">
+            <div class="mb-3">
+                <label for="mensaje" class="form-label">Mensaje:</label>
+                <textarea id="mensaje" name="mensaje" class="form-control bg-dark text-white" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-outline-light w-100">Enviar</button>
+        </form>
+    </div>
+</div>
 
 <%- include('partials/_footer') %>

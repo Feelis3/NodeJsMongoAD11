@@ -1,10 +1,11 @@
 const express = require('express');
-const router = express.Router();
 const Software = require("../models/software");
 const Asignatura = require("../models/asignatura");
 const fs = require('fs') //fileSystem
-const csv = require('csv-parser');
 const path = require('path');
+const nodemailer = require('nodemailer');
+const router = express.Router();
+
 function isAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {
         return next();
@@ -199,5 +200,53 @@ router.post('/asignaturas/softwares/delete/:id', isAuthenticated, async (req, re
         return res.redirect('/');
     }
 })
+
+
+
+
+
+router.post('/enviar-correo/:id', async (req, res) => {
+    try {
+        const { mensaje } = req.body;
+        const asignaturaId = req.params.id;
+
+        // 1Buscar la asignatura y obtener la lista de profesores
+        const asignatura = await Asignatura.findById(asignaturaId).populate('profesor');
+
+        if (!asignatura || !asignatura.profesor || asignatura.profesor.length === 0) {
+            return res.status(404).send('No hay profesores en esta asignatura.');
+        }
+
+        // Obtener los correos de los profesores
+        const correosProfesores = asignatura.profesor.map(prof => prof.email);
+
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'mario.marugan.profesor@gmail.com',
+                pass: 'vxsz pfyf wuhv nufk' // No la normal, sino una generada en Google
+            }
+        });
+
+        //  Enviar el correo a todos los profesores
+        let info = await transporter.sendMail({
+            from: 'camelmafiadam@outlook.es', // Debe coincidir con el remitente
+            to: correosProfesores.join(','), // Lista de destinatarios
+            subject: 'Mensaje desde la plataforma',
+            text: mensaje
+        });
+
+        console.log('Correo enviado a:', correosProfesores);
+        res.redirect('back');
+
+    } catch (error) {
+        console.error('Error al enviar el correo:', error);
+        res.status(500).send('Error al enviar el mensaje.');
+    }
+});
+
+
+
+
 
 module.exports = router;
